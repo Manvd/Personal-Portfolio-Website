@@ -7,7 +7,7 @@ A personal portfolio website built with **Python Django** showcasing my skills, 
 ## 📸 Screenshots
 
 ### 🏠 Home Page
-![Home Page](screenshots/home.png)
+![Home Page](Screenshots/home.png)
 
 ### 👤 About Page
 ![About Page](Screenshots/about.png)
