@@ -1,0 +1,434 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Projects — Manav Dawawala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+/* ── Projects page only ── */
+.ph{min-height:46vh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 64px 64px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.ph-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(12,1fr);pointer-events:none;}
+.ph-gc{border-right:1px solid var(--border);opacity:.4;}.ph-gc:first-child{border-left:1px solid var(--border);}
+.ph-wm{position:absolute;bottom:-10px;right:40px;font-family:var(--fh);font-size:clamp(80px,12vw,160px);font-weight:800;letter-spacing:-.06em;color:var(--off);line-height:1;user-select:none;pointer-events:none;}
+.ph-content{position:relative;z-index:2;}
+.ph-crumb{font-family:var(--fm);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:10px;margin-bottom:24px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
+.ph-crumb a:hover{color:var(--blue);}
+.ph-title{font-family:var(--fh);font-size:var(--fs-display);font-weight:800;letter-spacing:-.04em;line-height:.95;opacity:0;animation:fadeUp .7s ease .2s forwards;}
+.ph-title .line{display:block;}.ph-title .outline{-webkit-text-stroke:2px var(--black);color:transparent;}.ph-title .blue{color:var(--blue);}
+.ph-sub{font-size:.95rem;color:var(--mid);max-width:480px;line-height:1.75;margin-top:28px;opacity:0;animation:fadeUp .7s ease .35s forwards;}
+
+/* Filter bar */
+.filter-bar{display:flex;align-items:center;justify-content:space-between;padding:0 64px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:0;}
+.filter-tabs{display:flex;gap:0;}
+.ftab{padding:18px 28px;font-family:var(--fm);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);background:none;border:none;border-right:1px solid var(--border);border-bottom:2px solid transparent;cursor:none;white-space:nowrap;transition:color .2s,border-color .2s,background .2s;}
+.ftab:hover{color:var(--black);background:var(--off);}
+.ftab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.filter-count{font-family:var(--fm);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);padding:18px 0;}
+.filter-count span{color:var(--blue);font-weight:500;}
+
+/* Featured */
+.featured{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.featured-l{padding:80px 64px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;}
+.featured-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:20px;}
+.featured-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
+.featured-title{font-family:var(--fh);font-size:clamp(28px,3.5vw,48px);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px;}
+.featured-title span{color:var(--blue);}
+.featured-desc{font-size:.92rem;color:var(--mid);line-height:1.85;margin-bottom:32px;max-width:440px;}
+.featured-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:36px;}
+.featured-links{display:flex;gap:12px;flex-wrap:wrap;}
+.featured-r{padding:80px 64px;background:var(--off);display:flex;flex-direction:column;gap:28px;}
+.feat-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.feat-stat{background:var(--white);padding:28px 24px;border:1px solid var(--border);transition:border-color .25s;}
+.feat-stat:hover{border-color:var(--blue);}
+.feat-stat-n{font-family:var(--fh);font-size:1.8rem;font-weight:800;letter-spacing:-.04em;color:var(--black);line-height:1;margin-bottom:6px;}
+.feat-stat-n span{color:var(--blue);}
+.feat-stat-l{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+.feat-highlights{display:flex;flex-direction:column;gap:10px;}
+.feat-hl{display:flex;align-items:flex-start;gap:12px;font-size:.84rem;color:var(--dark);line-height:1.65;}
+.feat-hl-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:7px;}
+
+/* Projects list */
+.projects-list{border-bottom:1px solid var(--border);}
+.proj-item{display:grid;grid-template-columns:72px 1fr 180px 180px auto;align-items:center;gap:32px;padding:36px 64px;border-top:1px solid var(--border);transition:background .2s;position:relative;}
+.proj-item:hover{background:var(--off);}
+.proj-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--blue);transition:width .25s;}
+.proj-item:hover::before{width:3px;}
+.proj-num{font-family:var(--fm);font-size:.58rem;letter-spacing:.14em;color:var(--mid);}
+.proj-name{font-family:var(--fh);font-size:clamp(16px,1.8vw,22px);font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+.proj-desc-short{font-size:.8rem;color:var(--mid);line-height:1.6;max-width:400px;}
+.proj-cat{font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.proj-arr{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mid);font-size:1.1rem;font-weight:300;cursor:none;transition:all .2s;user-select:none;flex-shrink:0;}
+.proj-item:hover .proj-arr{background:var(--blue);border-color:var(--blue);color:var(--white);}
+
+/* Drawer */
+.proj-drawer{display:none;padding:0 64px 40px calc(72px + 32px + 64px);background:var(--off);border-top:1px solid var(--border);}
+.proj-drawer.open{display:block;}
+.drawer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;padding-top:32px;}
+.drawer-section-title{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
+.drawer-text{font-size:.84rem;color:var(--dark);line-height:1.75;}
+.drawer-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.drawer-list-item{display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:var(--dark);line-height:1.6;}
+.drawer-list-item::before{content:'→';color:var(--blue);font-family:var(--fm);font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.drawer-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+
+/* Side projects */
+.side-section{border-bottom:1px solid var(--border);}
+.side-head{display:flex;align-items:flex-end;justify-content:space-between;padding:56px 64px 0;flex-wrap:wrap;gap:20px;}
+.side-h2{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;margin-top:14px;}
+.side-h2 span{color:var(--blue);}
+.side-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);margin-top:48px;}
+.side-card{padding:44px 40px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s;}
+.side-card:nth-child(3n){border-right:none;}
+.side-card:nth-last-child(-n+3){border-bottom:none;}
+.side-card:hover{background:var(--off);}
+.side-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--blue);transition:width .4s;}
+.side-card:hover::before{width:100%;}
+.side-card-idx{font-family:var(--fm);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:20px;display:block;}
+.side-card-icon{font-size:1.6rem;margin-bottom:14px;display:block;}
+.side-card-name{font-family:var(--fh);font-size:1rem;font-weight:700;margin-bottom:8px;}
+.side-card-desc{font-size:.8rem;color:var(--mid);line-height:1.7;margin-bottom:16px;}
+.side-card-tags{display:flex;flex-wrap:wrap;gap:6px;}
+
+/* GitHub strip */
+.github-strip{display:flex;align-items:center;justify-content:space-between;padding:48px 64px;border-bottom:1px solid var(--border);background:var(--off);flex-wrap:wrap;gap:24px;}
+.github-strip-text p{font-family:var(--fm);font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.github-strip-text h3{font-family:var(--fh);font-size:clamp(20px,2.5vw,32px);font-weight:800;letter-spacing:-.03em;}
+.github-strip-text h3 span{color:var(--blue);}
+.github-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;background:var(--black);color:var(--white);font-family:var(--fm);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;border:1.5px solid var(--black);transition:background .25s,transform .2s;}
+.github-btn:hover{background:var(--blue);border-color:var(--blue);transform:translateY(-2px);}
+
+@media(max-width:1100px){
+  .featured{grid-template-columns:1fr;}.featured-l{border-right:none;border-bottom:1px solid var(--border);}
+  .proj-item{grid-template-columns:56px 1fr auto;}.proj-cat,.proj-tags{display:none;}
+  .drawer-grid{grid-template-columns:1fr 1fr;}
+  .side-grid{grid-template-columns:1fr 1fr;}.side-card:nth-child(3n){border-right:1px solid var(--border);}.side-card:nth-child(2n){border-right:none;}
+}
+@media(max-width:768px){
+  .ph,.featured-l,.featured-r,.side-head,.github-strip,.filter-bar{padding-left:24px;padding-right:24px;}
+  .ph-wm{display:none;}
+  .filter-tabs{overflow-x:auto;}.ftab{padding:14px 18px;font-size:.58rem;}
+  .proj-item{grid-template-columns:1fr auto;padding:22px 24px;}.proj-num{display:none;}
+  .proj-drawer{padding-left:24px;padding-right:24px;}
+  .drawer-grid{grid-template-columns:1fr;}
+  .side-grid{grid-template-columns:1fr;}.side-card{border-right:none;}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <span class="nav-logo-m">M</span><span class="nav-logo-d">d</span>
+    <div class="nav-logo-dot"></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'skills' %}">Skills</a></li>
+    <li><a href="{% url 'projects' %}" class="active">Projects</a></li>
+    <li><a href="{% url 'contacts' %}">Contact</a></li>
+  </ul>
+  <a href="{% url 'contacts' %}" class="nav-cta">Hire me <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="ph">
+  <div class="ph-grid">
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+  </div>
+  <div class="ph-wm">Projects</div>
+  <div class="ph-content">
+    <div class="ph-crumb">
+      <a href="{% url 'home' %}">Home</a>
+      <span style="color:var(--border)">/</span>
+      <span style="color:var(--black)">Projects</span>
+    </div>
+    <h1 class="ph-title">
+      <span class="line">Things I've</span>
+      <span class="line outline">built &</span>
+      <span class="line blue">shipped.</span>
+    </h1>
+    <p class="ph-sub">A collection of data engineering and Python backend projects — real systems solving real problems at scale.</p>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-tabs">
+    <button class="ftab active" data-filter="all">All</button>
+    <button class="ftab" data-filter="data">Data Engineering</button>
+    <button class="ftab" data-filter="backend">Python Backend</button>
+    <button class="ftab" data-filter="cloud">Cloud & DevOps</button>
+  </div>
+  <div class="filter-count">Showing <span id="proj-count">5</span> projects</div>
+</div>
+
+<!-- FEATURED -->
+<div class="featured reveal">
+  <div class="featured-l">
+    <div>
+      <div class="featured-badge"><div class="featured-badge-dot"></div>Featured Project</div>
+      <h2 class="featured-title">ETL Pipeline <span>Framework</span></h2>
+      <p class="featured-desc">A production-grade, modular ETL framework built in Python that ingests from 15+ heterogeneous sources, transforms through a configurable pipeline, and loads into a centralised PostgreSQL data warehouse — processing millions of rows daily with zero missed SLAs in 6 months of production.</p>
+      <div class="featured-tags">
+        <span class="pill">Python</span><span class="pill">Apache Airflow</span>
+        <span class="pill">PostgreSQL</span><span class="pill">Docker</span>
+        <span class="pill">AWS S3</span><span class="pill">Great Expectations</span><span class="pill">dbt</span>
+      </div>
+    </div>
+    <div class="featured-links">
+      <a href="#" class="btn-fill">View on GitHub <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="#" class="btn-ghost">Case Study</a>
+    </div>
+  </div>
+  <div class="featured-r">
+    <div class="feat-stat-grid">
+      <div class="feat-stat"><div class="feat-stat-n">5M<span>+</span></div><div class="feat-stat-l">Rows / day</div></div>
+      <div class="feat-stat"><div class="feat-stat-n">99<span>.9%</span></div><div class="feat-stat-l">SLA success</div></div>
+      <div class="feat-stat"><div class="feat-stat-n">15<span>+</span></div><div class="feat-stat-l">Data sources</div></div>
+      <div class="feat-stat"><div class="feat-stat-n">0</div><div class="feat-stat-l">Silent failures</div></div>
+    </div>
+    <div class="feat-highlights">
+      <div class="feat-hl"><div class="feat-hl-dot"></div>Idempotent pipeline design — safe to re-run at any time without duplicate data</div>
+      <div class="feat-hl"><div class="feat-hl-dot"></div>Pluggable extractor/loader architecture — add new sources with a single config file</div>
+      <div class="feat-hl"><div class="feat-hl-dot"></div>Built-in data quality checks via Great Expectations with Slack alerting</div>
+      <div class="feat-hl"><div class="feat-hl-dot"></div>Full Airflow DAG with retry logic, SLA monitoring, and email on failure</div>
+      <div class="feat-hl"><div class="feat-hl-dot"></div>Dockerised for local development and AWS ECS for production</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS LIST -->
+<div class="projects-list">
+
+  <div class="proj-item reveal" data-cat="backend" data-id="1">
+    <div class="proj-num">01</div>
+    <div class="proj-info">
+      <div class="proj-name">Scalable Task Manager</div>
+      <div class="proj-desc-short">Distributed task queue handling 50k+ jobs/day with FastAPI, Celery, and Redis.</div>
+    </div>
+    <div class="proj-cat">Backend · Distributed</div>
+    <div class="proj-tags"><span class="pill">FastAPI</span><span class="pill">Celery</span><span class="pill">Redis</span><span class="pill">PostgreSQL</span></div>
+    <div class="proj-arr" onclick="toggleDrawer(1)">+</div>
+  </div>
+  <div class="proj-drawer" id="drawer-1">
+    <div class="drawer-grid">
+      <div><div class="drawer-section-title">Overview</div><div class="drawer-text">A production-ready distributed task management system built for high-throughput async job processing with full observability, retry mechanisms, and dead-letter queue support.</div></div>
+      <div><div class="drawer-section-title">Key features</div><div class="drawer-list"><div class="drawer-list-item">Priority-based task queuing with Celery + Redis</div><div class="drawer-list-item">FastAPI REST interface with JWT authentication</div><div class="drawer-list-item">Configurable retry with exponential backoff</div><div class="drawer-list-item">Real-time job status via WebSocket</div><div class="drawer-list-item">Prometheus metrics + Grafana dashboard</div></div></div>
+      <div><div class="drawer-section-title">Tech stack</div><div class="drawer-stack"><span class="pill">FastAPI</span><span class="pill">Celery</span><span class="pill">Redis</span><span class="pill">PostgreSQL</span><span class="pill">Docker</span><span class="pill">Prometheus</span><span class="pill">pytest</span></div></div>
+    </div>
+  </div>
+
+  <div class="proj-item reveal d1" data-cat="data" data-id="2">
+    <div class="proj-num">02</div>
+    <div class="proj-info">
+      <div class="proj-name">Real-time Data Streaming</div>
+      <div class="proj-desc-short">Kafka + Spark Streaming pipeline for real-time event analytics and aggregation.</div>
+    </div>
+    <div class="proj-cat">Data Engineering</div>
+    <div class="proj-tags"><span class="pill">Kafka</span><span class="pill">Spark</span><span class="pill">Python</span><span class="pill">AWS</span></div>
+    <div class="proj-arr" onclick="toggleDrawer(2)">+</div>
+  </div>
+  <div class="proj-drawer" id="drawer-2">
+    <div class="drawer-grid">
+      <div><div class="drawer-section-title">Overview</div><div class="drawer-text">A real-time streaming pipeline that consumes events from Kafka, processes with PySpark Streaming, and aggregates into time-window metrics stored in PostgreSQL and surfaced via a dashboard.</div></div>
+      <div><div class="drawer-section-title">Key features</div><div class="drawer-list"><div class="drawer-list-item">Kafka consumer group with exactly-once semantics</div><div class="drawer-list-item">Sliding window aggregations with PySpark</div><div class="drawer-list-item">Schema registry for Avro message validation</div><div class="drawer-list-item">Dead-letter topic for malformed messages</div><div class="drawer-list-item">End-to-end latency under 5 seconds</div></div></div>
+      <div><div class="drawer-section-title">Tech stack</div><div class="drawer-stack"><span class="pill">Apache Kafka</span><span class="pill">PySpark</span><span class="pill">Python</span><span class="pill">PostgreSQL</span><span class="pill">AWS MSK</span><span class="pill">Avro</span></div></div>
+    </div>
+  </div>
+
+  <div class="proj-item reveal d2" data-cat="data" data-id="3">
+    <div class="proj-num">03</div>
+    <div class="proj-info">
+      <div class="proj-name">Analytics Data Warehouse</div>
+      <div class="proj-desc-short">dbt-powered transformation layer on Redshift with full data lineage and CI testing.</div>
+    </div>
+    <div class="proj-cat">Data Engineering · dbt</div>
+    <div class="proj-tags"><span class="pill">dbt</span><span class="pill">Redshift</span><span class="pill">Python</span><span class="pill">Airflow</span></div>
+    <div class="proj-arr" onclick="toggleDrawer(3)">+</div>
+  </div>
+  <div class="proj-drawer" id="drawer-3">
+    <div class="drawer-grid">
+      <div><div class="drawer-section-title">Overview</div><div class="drawer-text">End-to-end analytics warehouse with raw → staging → mart layers built in dbt on Amazon Redshift. Full data lineage, CI-tested models, and an Airflow DAG for orchestration.</div></div>
+      <div><div class="drawer-section-title">Key features</div><div class="drawer-list"><div class="drawer-list-item">3-layer dbt architecture: raw, staging, marts</div><div class="drawer-list-item">200+ dbt tests (schema + custom data quality)</div><div class="drawer-list-item">Auto documentation with dbt docs</div><div class="drawer-list-item">Incremental models for large tables</div><div class="drawer-list-item">CI/CD pipeline runs dbt test on every PR</div></div></div>
+      <div><div class="drawer-section-title">Tech stack</div><div class="drawer-stack"><span class="pill">dbt</span><span class="pill">Amazon Redshift</span><span class="pill">Python</span><span class="pill">Airflow</span><span class="pill">AWS S3</span><span class="pill">GitHub Actions</span></div></div>
+    </div>
+  </div>
+
+  <div class="proj-item reveal d3" data-cat="backend" data-id="4">
+    <div class="proj-num">04</div>
+    <div class="proj-info">
+      <div class="proj-name">REST API Service</div>
+      <div class="proj-desc-short">Django REST API serving 100k+ daily requests with JWT auth and async Celery tasks.</div>
+    </div>
+    <div class="proj-cat">Backend · API</div>
+    <div class="proj-tags"><span class="pill">Django</span><span class="pill">DRF</span><span class="pill">Celery</span><span class="pill">AWS</span></div>
+    <div class="proj-arr" onclick="toggleDrawer(4)">+</div>
+  </div>
+  <div class="proj-drawer" id="drawer-4">
+    <div class="drawer-grid">
+      <div><div class="drawer-section-title">Overview</div><div class="drawer-text">A production Django REST API with JWT auth, async task processing via Celery, rate limiting, and full OpenAPI docs. Deployed on AWS EC2 behind an ALB with RDS PostgreSQL.</div></div>
+      <div><div class="drawer-section-title">Key features</div><div class="drawer-list"><div class="drawer-list-item">JWT auth with refresh token rotation</div><div class="drawer-list-item">Async email and notification tasks via Celery</div><div class="drawer-list-item">Rate limiting with Django Ratelimit</div><div class="drawer-list-item">Swagger UI + ReDoc auto-generated docs</div><div class="drawer-list-item">99.5% uptime, avg response time 45ms</div></div></div>
+      <div><div class="drawer-section-title">Tech stack</div><div class="drawer-stack"><span class="pill">Django</span><span class="pill">DRF</span><span class="pill">Celery</span><span class="pill">Redis</span><span class="pill">PostgreSQL</span><span class="pill">AWS EC2</span><span class="pill">Nginx</span></div></div>
+    </div>
+  </div>
+
+  <div class="proj-item reveal d4" data-cat="cloud" data-id="5">
+    <div class="proj-num">05</div>
+    <div class="proj-info">
+      <div class="proj-name">Data Quality Monitor</div>
+      <div class="proj-desc-short">Automated data quality validation framework with Slack alerting and a web dashboard.</div>
+    </div>
+    <div class="proj-cat">Data · Monitoring</div>
+    <div class="proj-tags"><span class="pill">Python</span><span class="pill">Great Expectations</span><span class="pill">FastAPI</span><span class="pill">Slack API</span></div>
+    <div class="proj-arr" onclick="toggleDrawer(5)">+</div>
+  </div>
+  <div class="proj-drawer" id="drawer-5">
+    <div class="drawer-grid">
+      <div><div class="drawer-section-title">Overview</div><div class="drawer-text">A standalone data quality monitoring service that runs Great Expectations suites against any PostgreSQL or S3 dataset, generates HTML reports, and sends Slack alerts on failures.</div></div>
+      <div><div class="drawer-section-title">Key features</div><div class="drawer-list"><div class="drawer-list-item">Configurable expectation suites via YAML</div><div class="drawer-list-item">Auto-generated HTML data docs per run</div><div class="drawer-list-item">Slack / email alerting on failures</div><div class="drawer-list-item">FastAPI dashboard showing run history</div><div class="drawer-list-item">Airflow operator for pipeline integration</div></div></div>
+      <div><div class="drawer-section-title">Tech stack</div><div class="drawer-stack"><span class="pill">Python</span><span class="pill">Great Expectations</span><span class="pill">FastAPI</span><span class="pill">PostgreSQL</span><span class="pill">AWS S3</span><span class="pill">Slack API</span><span class="pill">Docker</span></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SIDE PROJECTS -->
+<section class="side-section">
+  <div class="side-head reveal">
+    <div><span class="lbl">Also built</span><h2 class="side-h2">Side <span>projects</span></h2></div>
+  </div>
+  <div class="side-grid">
+    <div class="side-card reveal d1">
+      <span class="side-card-idx">01</span>
+      <span class="side-card-icon">🔧</span>
+      <div class="side-card-name">pg-schema-diff</div>
+      <div class="side-card-desc">CLI tool that compares two PostgreSQL schemas and generates migration SQL. Useful for catching drift between environments.</div>
+      <div class="side-card-tags"><span class="pill">Python</span><span class="pill">PostgreSQL</span><span class="pill">CLI</span></div>
+    </div>
+    <div class="side-card reveal d2">
+      <span class="side-card-idx">02</span>
+      <span class="side-card-icon">📦</span>
+      <div class="side-card-name">airflow-dag-factory</div>
+      <div class="side-card-desc">Config-driven Airflow DAG generator. Define pipelines in YAML, generate fully functional DAGs with retry logic and SLA monitoring.</div>
+      <div class="side-card-tags"><span class="pill">Python</span><span class="pill">Airflow</span><span class="pill">YAML</span></div>
+    </div>
+    <div class="side-card reveal d3">
+      <span class="side-card-idx">03</span>
+      <span class="side-card-icon">📊</span>
+      <div class="side-card-name">csv-profiler</div>
+      <div class="side-card-desc">Lightweight Python library that profiles any CSV or Parquet file and outputs a data quality HTML report in seconds.</div>
+      <div class="side-card-tags"><span class="pill">Python</span><span class="pill">pandas</span><span class="pill">Parquet</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GITHUB STRIP -->
+<div class="github-strip reveal">
+  <div class="github-strip-text">
+    <p>Open source</p>
+    <h3>All projects are on <span>GitHub</span></h3>
+  </div>
+  <a href="#" class="github-btn">
+    <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+    View GitHub Profile
+  </a>
+</div>
+
+<!-- CTA -->
+<div class="cta-band reveal">
+  <div>
+    <div class="cta-pre">Like what you see?</div>
+    <h2 class="cta-h2">Let's build the <span>next one.</span></h2>
+  </div>
+  <div class="cta-btns">
+    <a href="{% url 'contacts' %}" class="btn-cta-white">Get in Touch <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="{% url 'about' %}" class="btn-cta-outline">About Me</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="flogo"><span class="flogo-m">M</span><span class="flogo-d">d</span><div class="flogo-dot"></div></div>
+      <p class="ftag">Data Engineer & Python backend developer building reliable pipelines and scalable systems.</p>
+    </div>
+    <div class="fc"><span class="fc-t">Navigate</span><ul><li><a href="{% url 'home' %}">Home</a></li><li><a href="{% url 'about' %}">About</a></li><li><a href="{% url 'skills' %}">Skills</a></li><li><a href="{% url 'projects' %}">Projects</a></li><li><a href="{% url 'contacts' %}">Contact</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Expertise</span><ul><li><a href="#">ETL Pipelines</a></li><li><a href="#">Python Backend</a></li><li><a href="#">Data Warehousing</a></li><li><a href="#">Task Orchestration</a></li><li><a href="#">Cloud & DevOps</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Contact</span><ul><li><a href="mailto:manav@example.com">manav@example.com</a></li><li><a href="#">India · Remote</a></li><li><a href="#">LinkedIn ↗</a></li><li><a href="#">GitHub ↗</a></li><li><a href="#">Resume ↗</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <span class="fcopy">© 2026 <strong>Manav Dawawala</strong> · All rights reserved</span>
+    <div class="fsocs">
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.24 3h3.28l-7.17 8.2L22.73 21H16.3l-5.17-6.76L5.02 21H1.72l7.67-8.77L1.26 3h6.59l4.68 6.19L18.24 3z"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.proj-item,.side-card,.feat-stat').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>40));
+
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');obs.unobserve(x.target);}});},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* Drawer toggle */
+function toggleDrawer(id){
+  const drawer=document.getElementById('drawer-'+id);
+  const btn=drawer.previousElementSibling.querySelector('.proj-arr');
+  const isOpen=drawer.classList.contains('open');
+  document.querySelectorAll('.proj-drawer').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.proj-arr').forEach(b=>b.textContent='+');
+  if(!isOpen){
+    drawer.classList.add('open');
+    btn.textContent='−';
+    setTimeout(()=>drawer.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  }
+}
+
+/* Filter */
+const allItems=document.querySelectorAll('.proj-item');
+document.querySelectorAll('.ftab').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    const filter=this.dataset.filter;
+    let count=0;
+    allItems.forEach(item=>{
+      const drawer=document.getElementById('drawer-'+item.dataset.id);
+      if(drawer) drawer.classList.remove('open');
+      const arr=item.querySelector('.proj-arr');
+      if(arr) arr.textContent='+';
+      const show=filter==='all'||item.dataset.cat===filter;
+      item.style.display=show?'':'none';
+      if(drawer) drawer.style.display=show?'':'none';
+      if(show) count++;
+    });
+    document.getElementById('proj-count').textContent=count;
+  });
+});
+</script>
+</body>
+</html>

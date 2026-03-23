@@ -1,0 +1,379 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About — Manav Dawawala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+/* ── About page only ── */
+.ph{min-height:46vh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 64px 64px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.ph-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(12,1fr);pointer-events:none;}
+.ph-gc{border-right:1px solid var(--border);opacity:.4;}
+.ph-gc:first-child{border-left:1px solid var(--border);}
+.ph-wm{position:absolute;bottom:-10px;right:40px;font-family:var(--fh);font-size:clamp(90px,13vw,170px);font-weight:800;letter-spacing:-.06em;color:var(--off);line-height:1;user-select:none;pointer-events:none;}
+.ph-content{position:relative;z-index:2;}
+.ph-crumb{font-family:var(--fm);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:10px;margin-bottom:24px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
+.ph-crumb a:hover{color:var(--blue);}
+.ph-title{font-family:var(--fh);font-size:var(--fs-display);font-weight:800;letter-spacing:-.04em;line-height:.95;opacity:0;animation:fadeUp .7s ease .2s forwards;}
+.ph-title .line{display:block;}
+.ph-title .outline{-webkit-text-stroke:2px var(--black);color:transparent;}
+.ph-title .blue{color:var(--blue);}
+.ph-sub{font-size:.95rem;color:var(--mid);max-width:480px;line-height:1.75;margin-top:28px;opacity:0;animation:fadeUp .7s ease .35s forwards;}
+
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+.ss-item{padding:44px 52px;border-right:1px solid var(--border);transition:background .25s;}
+.ss-item:last-child{border-right:none;}
+.ss-item:hover{background:var(--off);}
+.ss-n{font-family:var(--fh);font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--black);margin-bottom:6px;}
+.ss-n span{color:var(--blue);}
+.ss-label{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+.ss-desc{font-size:.8rem;color:var(--mid);margin-top:6px;line-height:1.6;}
+
+.story{display:grid;grid-template-columns:1fr 1.4fr;border-bottom:1px solid var(--border);}
+.story-l{padding:96px 64px;border-right:1px solid var(--border);position:sticky;top:68px;align-self:start;}
+.story-name{font-family:var(--fh);font-size:clamp(32px,4vw,56px);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin:18px 0 10px;}
+.story-name span{color:var(--blue);}
+.story-role{font-family:var(--fm);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:18px;}
+.story-tagline{font-size:.92rem;color:var(--mid);line-height:1.8;max-width:280px;margin-bottom:28px;}
+.story-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;}
+.story-links{display:flex;gap:12px;flex-wrap:wrap;}
+.story-r{padding:96px 64px;}
+.sp{font-size:.95rem;color:var(--dark);line-height:1.9;margin-bottom:26px;}
+.sp strong{color:var(--black);font-weight:600;}
+.pull{margin:48px 0;padding:32px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.pull-text{font-family:var(--fh);font-size:clamp(20px,2.5vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.3;color:var(--black);}
+.pull-text span{color:var(--blue);}
+
+.exp{border-bottom:1px solid var(--border);}
+.exp-head{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.exp-hl{padding:72px 64px;border-right:1px solid var(--border);}
+.exp-hr{padding:72px 64px;display:flex;flex-direction:column;justify-content:flex-end;}
+.exp-h2{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:16px 0 0;}
+.exp-h2 span{color:var(--blue);}
+.exp-note{font-size:.92rem;color:var(--mid);line-height:1.8;max-width:340px;}
+.exp-item{display:grid;grid-template-columns:200px 1fr auto;gap:40px;align-items:start;padding:48px 64px;border-top:1px solid var(--border);transition:background .25s;position:relative;}
+.exp-item:hover{background:var(--off);}
+.exp-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--blue);transition:width .3s;}
+.exp-item:hover::before{width:3px;}
+.exp-date{font-family:var(--fm);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding-top:4px;}
+.exp-date strong{display:block;color:var(--black);font-size:.78rem;margin-bottom:4px;}
+.exp-title{font-family:var(--fh);font-size:1.05rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+.exp-company{font-family:var(--fm);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
+.exp-desc{font-size:.84rem;color:var(--mid);line-height:1.75;max-width:500px;}
+.exp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.exp-tag{padding:3px 10px;border:1px solid var(--border);font-family:var(--fm);font-size:.57rem;letter-spacing:.08em;color:var(--mid);}
+.exp-badge{font-family:var(--fm);font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);color:var(--mid);white-space:nowrap;align-self:flex-start;}
+.exp-badge.cur{border-color:var(--blue);color:var(--blue);background:var(--blue-lt);}
+
+.values{border-bottom:1px solid var(--border);}
+.values-head{padding:72px 64px 0;}
+.val-h2{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;margin-top:16px;}
+.val-h2 span{color:var(--blue);}
+.val-grid{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border-top:1px solid var(--border);}
+.vi{padding:48px 40px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s;}
+.vi:nth-child(3n){border-right:none;}
+.vi:nth-last-child(-n+3){border-bottom:none;}
+.vi:hover{background:var(--off);}
+.vi::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--blue);transition:width .4s;}
+.vi:hover::before{width:100%;}
+.vi-num{font-family:var(--fh);font-size:4rem;font-weight:800;letter-spacing:-.06em;line-height:1;color:var(--border);margin-bottom:20px;transition:color .3s;}
+.vi:hover .vi-num{color:var(--blue);}
+.vi-title{font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:8px;}
+.vi-desc{font-size:.8rem;color:var(--mid);line-height:1.75;}
+
+.edu{border-bottom:1px solid var(--border);}
+.edu-head{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.edu-hl{padding:72px 64px;border-right:1px solid var(--border);}
+.edu-hr{padding:72px 64px;}
+.edu-h2{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:16px 0 0;}
+.edu-h2 span{color:var(--blue);}
+.edu-note{font-size:.92rem;color:var(--mid);line-height:1.8;}
+.edu-item{display:grid;grid-template-columns:200px 1fr;gap:40px;padding:48px 64px;border-top:1px solid var(--border);transition:background .25s;}
+.edu-item:hover{background:var(--off);}
+.edu-year{font-family:var(--fm);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding-top:4px;}
+.edu-degree{font-family:var(--fh);font-size:1.05rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+.edu-inst{font-family:var(--fm);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
+.edu-desc{font-size:.84rem;color:var(--mid);line-height:1.75;}
+
+.beyond{border-bottom:1px solid var(--border);}
+.beyond-head{padding:72px 64px 0;}
+.bnd-h2{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;margin-top:16px;}
+.bnd-h2 span{color:var(--blue);}
+.bnd-grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:56px;border-top:1px solid var(--border);}
+.bc{padding:44px 32px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .3s;}
+.bc:nth-child(4n){border-right:none;}
+.bc:nth-last-child(-n+4){border-bottom:none;}
+.bc:hover{background:var(--off);}
+.bc-emoji{font-size:1.8rem;margin-bottom:16px;display:block;}
+.bc-title{font-family:var(--fh);font-size:.92rem;font-weight:700;margin-bottom:7px;}
+.bc-desc{font-size:.78rem;color:var(--mid);line-height:1.7;}
+
+@media(max-width:1100px){
+  .story{grid-template-columns:1fr;}.story-l{position:static;border-right:none;border-bottom:1px solid var(--border);}
+  .exp-head{grid-template-columns:1fr;}.exp-hl{border-right:none;border-bottom:1px solid var(--border);}
+  .exp-item{grid-template-columns:160px 1fr;}.exp-badge{display:none;}
+  .val-grid{grid-template-columns:1fr 1fr;}
+  .vi:nth-child(3n){border-right:1px solid var(--border);}.vi:nth-child(2n){border-right:none;}
+  .edu-head{grid-template-columns:1fr;}.edu-hl{border-right:none;border-bottom:1px solid var(--border);}
+  .bnd-grid{grid-template-columns:1fr 1fr;}
+  .bc:nth-child(4n){border-right:1px solid var(--border);}.bc:nth-child(2n){border-right:none;}
+  .stat-strip{grid-template-columns:1fr 1fr;}
+  .ss-item:nth-child(2){border-right:none;}
+}
+@media(max-width:768px){
+  .ph,.story-l,.story-r,.exp-hl,.exp-hr,.exp-item,.edu-hl,.edu-hr,.edu-item,.values-head,.beyond-head{padding-left:24px;padding-right:24px;}
+  .ph-wm{display:none;}
+  .stat-strip{grid-template-columns:1fr;}.ss-item{border-right:none;}
+  .exp-item{grid-template-columns:1fr;gap:12px;}
+  .edu-item{grid-template-columns:1fr;gap:12px;}
+  .val-grid{grid-template-columns:1fr;}.vi{border-right:none;}
+  .bnd-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <span class="nav-logo-m">M</span><span class="nav-logo-d">d</span>
+    <div class="nav-logo-dot"></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'about' %}" class="active">About</a></li>
+    <li><a href="{% url 'skills' %}">Skills</a></li>
+    <li><a href="{% url 'projects' %}">Projects</a></li>
+    <li><a href="{% url 'contacts' %}">Contact</a></li>
+  </ul>
+  <a href="{% url 'contacts' %}" class="nav-cta">Hire me <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="ph">
+  <div class="ph-grid">
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+  </div>
+  <div class="ph-wm">About</div>
+  <div class="ph-content">
+    <div class="ph-crumb">
+      <a href="{% url 'home' %}">Home</a>
+      <span style="color:var(--border)">/</span>
+      <span style="color:var(--black)">About</span>
+    </div>
+    <h1 class="ph-title">
+      <span class="line">The engineer</span>
+      <span class="line outline">behind the</span>
+      <span class="line blue">pipelines.</span>
+    </h1>
+    <p class="ph-sub">Data Engineer and Python backend developer — obsessed with clean architecture, reliable systems, and data that always arrives on time.</p>
+  </div>
+</div>
+
+<!-- STAT STRIP -->
+<div class="stat-strip">
+  <div class="ss-item reveal">
+    <div class="ss-n">3<span>+</span></div>
+    <div class="ss-label">Years experience</div>
+    <div class="ss-desc">Pipelines, APIs & distributed systems.</div>
+  </div>
+  <div class="ss-item reveal d1">
+    <div class="ss-n">10<span>+</span></div>
+    <div class="ss-label">Projects shipped</div>
+    <div class="ss-desc">From ingestion to production dashboards.</div>
+  </div>
+  <div class="ss-item reveal d2">
+    <div class="ss-n">TB<span>s</span></div>
+    <div class="ss-label">Data processed</div>
+    <div class="ss-desc">Batch and streaming workloads at scale.</div>
+  </div>
+  <div class="ss-item reveal d3">
+    <div class="ss-n">0</div>
+    <div class="ss-label">3am incidents</div>
+    <div class="ss-desc">Good monitoring means fewer surprises.</div>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="story">
+  <div class="story-l reveal">
+    <span class="lbl">My story</span>
+    <h2 class="story-name">Manav<br><span>Dawawala</span></h2>
+    <div class="story-role">Data Engineer · Python Backend</div>
+    <p class="story-tagline">Building pipelines and backend systems that teams can depend on — day in, day out.</p>
+    <div class="story-chips">
+      <span class="pill">Open to work</span>
+      <span class="pill">Remote friendly</span>
+      <span class="pill">Python · SQL</span>
+      <span class="pill">India · UTC+5:30</span>
+    </div>
+    <div class="story-links">
+      <a href="{% url 'contacts' %}" class="btn-fill">Work together <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="{% url 'projects' %}" class="btn-ghost">My projects</a>
+    </div>
+  </div>
+  <div class="story-r">
+    <p class="sp reveal">I'm <strong>Manav Dawawala</strong>, a Data Engineer and Python backend developer based in India. I've spent the past 3+ years building systems that move, transform, and serve data reliably — the kind of infrastructure that quietly powers dashboards, reports, and decisions that teams rely on every day.</p>
+    <p class="sp reveal d1">My work started with Python scripts and SQL queries, and grew into designing full <strong>ETL/ELT pipelines</strong>, distributed task managers, data warehouses, and REST APIs. I care deeply about writing code that is readable, testable, and easy to hand off — because the best systems are the ones that other engineers enjoy working with.</p>
+    <p class="sp reveal d2">Two projects I'm especially proud of: a <strong>production ETL Pipeline Framework</strong> that processes millions of rows daily with zero missed SLAs, and a <strong>Scalable Task Manager</strong> built with FastAPI, Celery, and Redis that handles 50,000+ jobs per day without breaking a sweat.</p>
+    <div class="pull reveal d3">
+      <div class="pull-text">The best pipeline is the one <span>nobody notices</span> — because it always runs, always delivers, and <span>never lies</span> about its data.</div>
+    </div>
+    <p class="sp reveal d4">Outside work I'm constantly learning — currently exploring Apache Flink, advanced dbt patterns, and preparing for my <strong>AWS Data Engineer certification</strong>. The data engineering field evolves fast and staying curious is the only way to keep up.</p>
+    <p class="sp reveal d5">I value <strong>clear communication, honest feedback, and sustainable engineering practices</strong>. I don't build systems that need constant babysitting — I build systems that tell you when something's wrong before you even notice.</p>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="exp">
+  <div class="exp-head">
+    <div class="exp-hl reveal"><span class="lbl">Career</span><h2 class="exp-h2">Work<br><span>experience</span></h2></div>
+    <div class="exp-hr reveal d2"><p class="exp-note">3+ years across data engineering, backend development, and distributed systems — always focused on reliability and clean architecture.</p></div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-date"><strong>2023 — Now</strong>Remote / India</div>
+    <div>
+      <div class="exp-title">Data Engineer & Python Backend Developer</div>
+      <div class="exp-company">Freelance / Independent</div>
+      <div class="exp-desc">Designing and building ETL pipelines, REST APIs, and distributed task systems for startups and data teams. Full ownership from architecture to deployment. Clients span logistics, fintech, and SaaS.</div>
+      <div class="exp-tags"><span class="exp-tag">Python</span><span class="exp-tag">Airflow</span><span class="exp-tag">FastAPI</span><span class="exp-tag">PostgreSQL</span><span class="exp-tag">Docker</span><span class="exp-tag">AWS</span></div>
+    </div>
+    <div class="exp-badge cur">Current</div>
+  </div>
+
+  <div class="exp-item reveal d1">
+    <div class="exp-date"><strong>2022 — 2023</strong>India</div>
+    <div>
+      <div class="exp-title">Backend Python Developer</div>
+      <div class="exp-company">TechStack Solutions</div>
+      <div class="exp-desc">Built and maintained Django REST APIs serving 100k+ daily requests. Introduced async task processing with Celery and Redis, reducing average response time by 60%. Led migration from monolith to service-oriented architecture.</div>
+      <div class="exp-tags"><span class="exp-tag">Django</span><span class="exp-tag">DRF</span><span class="exp-tag">Celery</span><span class="exp-tag">Redis</span><span class="exp-tag">PostgreSQL</span></div>
+    </div>
+    <div class="exp-badge">Full-time</div>
+  </div>
+
+  <div class="exp-item reveal d2">
+    <div class="exp-date"><strong>2021 — 2022</strong>India</div>
+    <div>
+      <div class="exp-title">Junior Data Engineer</div>
+      <div class="exp-company">DataPulse Analytics</div>
+      <div class="exp-desc">Wrote and maintained Python ETL scripts ingesting data from 15+ sources into a centralised PostgreSQL warehouse. Built Airflow DAGs for scheduling and monitoring. First exposure to dbt for the transformation layer.</div>
+      <div class="exp-tags"><span class="exp-tag">Python</span><span class="exp-tag">Airflow</span><span class="exp-tag">dbt</span><span class="exp-tag">PostgreSQL</span><span class="exp-tag">pandas</span></div>
+    </div>
+    <div class="exp-badge">Full-time</div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+  <div class="values-head reveal">
+    <span class="lbl">What I believe</span>
+    <h2 class="val-h2">Engineering <span>principles</span></h2>
+  </div>
+  <div class="val-grid">
+    <div class="vi reveal d1"><div class="vi-num">01</div><div class="vi-title">Reliability over cleverness</div><div class="vi-desc">A boring pipeline that runs every time beats a clever one that occasionally doesn't. I optimise for predictability, not elegance for its own sake.</div></div>
+    <div class="vi reveal d2"><div class="vi-num">02</div><div class="vi-title">Observability first</div><div class="vi-desc">If a pipeline fails silently, it might as well not exist. Logging, alerting, and data quality checks are not optional — they're part of the feature.</div></div>
+    <div class="vi reveal d3"><div class="vi-num">03</div><div class="vi-title">Idempotency matters</div><div class="vi-desc">Every pipeline I write can be re-run safely. Duplicate data is worse than missing data — and it's entirely preventable with the right design.</div></div>
+    <div class="vi reveal d4"><div class="vi-num">04</div><div class="vi-title">Document the contract</div><div class="vi-desc">Before writing a line of code, I define the data contract — schema, freshness SLA, quality rules. Surprises at 2am are a documentation failure.</div></div>
+    <div class="vi reveal d5"><div class="vi-num">05</div><div class="vi-title">Test early, test often</div><div class="vi-desc">Unit tests, integration tests, and data quality assertions aren't overhead — they're the only way to refactor confidently and move fast without breaking things.</div></div>
+    <div class="vi reveal d6"><div class="vi-num">06</div><div class="vi-title">Keep learning</div><div class="vi-desc">The data ecosystem evolves fast. I stay current, experiment with new tools, and bring back only what genuinely solves problems — not what's trendy.</div></div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section class="edu">
+  <div class="edu-head">
+    <div class="edu-hl reveal"><span class="lbl">Education</span><h2 class="edu-h2">Academic<br><span>background</span></h2></div>
+    <div class="edu-hr reveal d2"><p class="edu-note">Strong computer science foundations paired with hands-on self-learning across data engineering, cloud infrastructure, and distributed systems.</p></div>
+  </div>
+  <div class="edu-item reveal">
+    <div class="edu-year">2018 — 2022</div>
+    <div>
+      <div class="edu-degree">B.Tech — Computer Science & Engineering</div>
+      <div class="edu-inst">University · India · Graduated with Distinction</div>
+      <div class="edu-desc">Core coursework in databases, algorithms, OS, and distributed computing. Final year project: a real-time data streaming system using Kafka and Python. Active in the coding and open-source club.</div>
+    </div>
+  </div>
+  <div class="edu-item reveal d1">
+    <div class="edu-year">Self-taught</div>
+    <div>
+      <div class="edu-degree">Data Engineering & Cloud</div>
+      <div class="edu-inst">Independent Study · Ongoing</div>
+      <div class="edu-desc">Deep dives into Apache Spark, Airflow, dbt, Kafka, and AWS services through documentation, courses, and real projects. Currently preparing for AWS Certified Data Engineer – Associate.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BEYOND -->
+<section class="beyond">
+  <div class="beyond-head reveal">
+    <span class="lbl">Beyond the terminal</span>
+    <h2 class="bnd-h2">A few things<br>about <span>me</span></h2>
+  </div>
+  <div class="bnd-grid">
+    <div class="bc reveal d1"><span class="bc-emoji">☕</span><div class="bc-title">Coffee first</div><div class="bc-desc">No pipeline runs before the first cup. Strong filter coffee is non-negotiable — it's where the best architecture decisions happen.</div></div>
+    <div class="bc reveal d2"><span class="bc-emoji">📖</span><div class="bc-title">Technical reader</div><div class="bc-desc">I read engineering blogs obsessively — Uber, Netflix, Stripe, Airbnb. Real-world system design is more educational than any textbook.</div></div>
+    <div class="bc reveal d3"><span class="bc-emoji">🎮</span><div class="bc-title">Strategy gamer</div><div class="bc-desc">Chess and strategy games sharpen systems thinking. Every opening has tradeoffs — just like every pipeline architecture decision.</div></div>
+    <div class="bc reveal d4"><span class="bc-emoji">🚴</span><div class="bc-title">Weekend cyclist</div><div class="bc-desc">Cycling clears the head after a week of debugging. Some of my best architecture ideas arrive somewhere between km 20 and km 40.</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band reveal">
+  <div>
+    <div class="cta-pre">Let's work together</div>
+    <h2 class="cta-h2">Got data to move?<br><span>Let's talk.</span></h2>
+  </div>
+  <div class="cta-btns">
+    <a href="{% url 'contacts' %}" class="btn-cta-white">Get in Touch <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="{% url 'projects' %}" class="btn-cta-outline">View Projects</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="flogo"><span class="flogo-m">M</span><span class="flogo-d">d</span><div class="flogo-dot"></div></div>
+      <p class="ftag">Data Engineer & Python backend developer building reliable pipelines and scalable systems.</p>
+    </div>
+    <div class="fc"><span class="fc-t">Navigate</span><ul><li><a href="{% url 'home' %}">Home</a></li><li><a href="{% url 'about' %}">About</a></li><li><a href="{% url 'skills' %}">Skills</a></li><li><a href="{% url 'projects' %}">Projects</a></li><li><a href="{% url 'contacts' %}">Contact</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Expertise</span><ul><li><a href="#">ETL Pipelines</a></li><li><a href="#">Python Backend</a></li><li><a href="#">Data Warehousing</a></li><li><a href="#">Task Orchestration</a></li><li><a href="#">Cloud & DevOps</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Contact</span><ul><li><a href="mailto:manav@example.com">manav@example.com</a></li><li><a href="#">India · Remote</a></li><li><a href="#">LinkedIn ↗</a></li><li><a href="#">GitHub ↗</a></li><li><a href="#">Resume ↗</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <span class="fcopy">© 2026 <strong>Manav Dawawala</strong> · All rights reserved</span>
+    <div class="fsocs">
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.24 3h3.28l-7.17 8.2L22.73 21H16.3l-5.17-6.76L5.02 21H1.72l7.67-8.77L1.26 3h6.59l4.68 6.19L18.24 3z"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.exp-item,.vi,.bc,.ss-item,.edu-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>40));
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');obs.unobserve(x.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

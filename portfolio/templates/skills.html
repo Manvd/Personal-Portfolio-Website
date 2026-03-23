@@ -1,0 +1,394 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Skills — Manav Dawawala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+/* ── Skills page only ── */
+.ph{min-height:46vh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 64px 64px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.ph-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(12,1fr);pointer-events:none;}
+.ph-gc{border-right:1px solid var(--border);opacity:.4;}
+.ph-gc:first-child{border-left:1px solid var(--border);}
+.ph-wm{position:absolute;bottom:-10px;right:40px;font-family:var(--fh);font-size:clamp(90px,13vw,170px);font-weight:800;letter-spacing:-.06em;color:var(--off);line-height:1;user-select:none;pointer-events:none;}
+.ph-content{position:relative;z-index:2;}
+.ph-crumb{font-family:var(--fm);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:10px;margin-bottom:24px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
+.ph-crumb a:hover{color:var(--blue);}
+.ph-title{font-family:var(--fh);font-size:var(--fs-display);font-weight:800;letter-spacing:-.04em;line-height:.95;opacity:0;animation:fadeUp .7s ease .2s forwards;}
+.ph-title .line{display:block;}
+.ph-title .outline{-webkit-text-stroke:2px var(--black);color:transparent;}
+.ph-title .blue{color:var(--blue);}
+.ph-sub{font-size:.95rem;color:var(--mid);max-width:480px;line-height:1.75;margin-top:28px;opacity:0;animation:fadeUp .7s ease .35s forwards;}
+
+/* Stat strip */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+.ss-item{padding:44px 52px;border-right:1px solid var(--border);transition:background .25s;}
+.ss-item:last-child{border-right:none;}
+.ss-item:hover{background:var(--off);}
+.ss-n{font-family:var(--fh);font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--black);margin-bottom:6px;}
+.ss-n span{color:var(--blue);}
+.ss-label{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+
+/* Main layout */
+.skills-main{display:grid;grid-template-columns:280px 1fr;border-bottom:1px solid var(--border);}
+.skills-sidebar{border-right:1px solid var(--border);padding:64px 40px;position:sticky;top:68px;align-self:start;}
+.skills-sidebar-title{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:16px 0 14px;}
+.skills-sidebar-title span{color:var(--blue);}
+.skills-sidebar-note{font-size:.84rem;color:var(--mid);line-height:1.8;margin-bottom:28px;}
+.skills-sidebar-cats{display:flex;flex-direction:column;gap:4px;}
+.sidebar-cat{display:flex;align-items:center;gap:12px;padding:12px 14px;font-family:var(--fm);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);cursor:none;border:1px solid transparent;transition:all .2s;}
+.sidebar-cat:hover{color:var(--black);background:var(--off);border-color:var(--border);}
+.sidebar-cat.active{color:var(--blue);background:var(--blue-lt);border-color:var(--blue);}
+.sidebar-cat-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .2s;}
+.sidebar-cat.active .sidebar-cat-dot{background:var(--blue);}
+
+/* Content */
+.skills-content{padding:64px;}
+.skill-group-block{margin-bottom:64px;padding-bottom:64px;border-bottom:1px solid var(--border);}
+.skill-group-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.sgb-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:36px;gap:24px;flex-wrap:wrap;}
+.sgb-title{font-family:var(--fh);font-size:clamp(22px,2.5vw,32px);font-weight:800;letter-spacing:-.03em;margin-top:12px;}
+.sgb-title span{color:var(--blue);}
+.sgb-desc{font-size:.85rem;color:var(--mid);line-height:1.75;max-width:380px;}
+
+/* Skill cards */
+.skill-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:24px;}
+.skill-card{padding:24px 20px;border:1px solid var(--border);transition:background .25s,border-color .25s,transform .25s;position:relative;overflow:hidden;}
+.skill-card:hover{background:var(--off);border-color:var(--blue);transform:translateY(-3px);}
+.skill-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--blue);transition:width .35s;}
+.skill-card:hover::before{width:100%;}
+.skill-card-name{font-family:var(--fh);font-size:.9rem;font-weight:700;margin-bottom:5px;}
+.skill-card-level{font-family:var(--fm);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
+.skill-card-bar{height:2px;background:var(--border);margin-top:8px;}
+.skill-card-bar-fill{height:100%;background:var(--blue);width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1);}
+.skill-card-bar-fill.go{width:var(--w);}
+
+/* Prof bars */
+.prof-bars{margin-bottom:8px;}
+.sbar{margin-bottom:18px;}
+.sbar-h{display:flex;justify-content:space-between;margin-bottom:7px;}
+.sbar-name{font-size:.82rem;font-weight:500;}
+.sbar-pct{font-family:var(--fm);font-size:.65rem;color:var(--blue);}
+.sbar-track{height:2px;background:var(--border);}
+.sbar-fill{height:100%;background:var(--blue);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.sbar-fill.go{width:var(--w);}
+
+/* Tool tags */
+.tools-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.tool-tag{padding:6px 14px;border:1px solid var(--border);font-family:var(--fm);font-size:.62rem;letter-spacing:.07em;color:var(--dark);transition:all .2s;}
+.tool-tag:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt);}
+
+/* Learning */
+.learning-section{padding:80px 64px;border-bottom:1px solid var(--border);background:var(--off);}
+.learning-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:48px;border-top:1px solid var(--border);}
+.learn-card{padding:36px 28px;background:var(--white);border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .3s;}
+.learn-card:nth-child(4n){border-right:none;}
+.learn-card:hover{background:var(--off);}
+.learn-icon{font-size:1.6rem;margin-bottom:16px;display:block;}
+.learn-name{font-family:var(--fh);font-size:.92rem;font-weight:700;margin-bottom:6px;}
+.learn-desc{font-size:.78rem;color:var(--mid);line-height:1.65;}
+.learn-badge{display:inline-block;margin-top:10px;padding:3px 10px;background:var(--blue-lt);border:1px solid var(--blue);font-family:var(--fm);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);}
+
+@media(max-width:1100px){
+  .stat-strip{grid-template-columns:1fr 1fr;}
+  .ss-item:nth-child(2){border-right:none;}
+  .skills-main{grid-template-columns:1fr;}
+  .skills-sidebar{position:static;border-right:none;border-bottom:1px solid var(--border);}
+  .skill-cards{grid-template-columns:1fr 1fr;}
+  .learning-grid{grid-template-columns:1fr 1fr;}
+  .learn-card:nth-child(4n){border-right:1px solid var(--border);}
+  .learn-card:nth-child(2n){border-right:none;}
+}
+@media(max-width:768px){
+  .ph,.skills-sidebar,.skills-content,.learning-section{padding-left:24px;padding-right:24px;}
+  .ph-wm{display:none;}
+  .stat-strip{grid-template-columns:1fr;}
+  .ss-item{border-right:none;}
+  .skill-cards{grid-template-columns:1fr;}
+  .learning-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <span class="nav-logo-m">M</span><span class="nav-logo-d">d</span>
+    <div class="nav-logo-dot"></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'skills' %}" class="active">Skills</a></li>
+    <li><a href="{% url 'projects' %}">Projects</a></li>
+    <li><a href="{% url 'contacts' %}">Contact</a></li>
+  </ul>
+  <a href="{% url 'contacts' %}" class="nav-cta">Hire me <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="ph">
+  <div class="ph-grid">
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+  </div>
+  <div class="ph-wm">Skills</div>
+  <div class="ph-content">
+    <div class="ph-crumb">
+      <a href="{% url 'home' %}">Home</a>
+      <span style="color:var(--border)">/</span>
+      <span style="color:var(--black)">Skills</span>
+    </div>
+    <h1 class="ph-title">
+      <span class="line">Technical</span>
+      <span class="line outline">Arsenal</span>
+      <span class="line blue">& Stack.</span>
+    </h1>
+    <p class="ph-sub">Every tool, technology, and technique I've sharpened over 3+ years of building data pipelines and backend systems.</p>
+  </div>
+</div>
+
+<!-- STAT STRIP -->
+<div class="stat-strip">
+  <div class="ss-item reveal"><div class="ss-n">6<span>+</span></div><div class="ss-label">Skill domains</div></div>
+  <div class="ss-item reveal d1"><div class="ss-n">25<span>+</span></div><div class="ss-label">Tools & frameworks</div></div>
+  <div class="ss-item reveal d2"><div class="ss-n">3<span>+</span></div><div class="ss-label">Years practice</div></div>
+  <div class="ss-item reveal d3"><div class="ss-n">TB<span>s</span></div><div class="ss-label">Data processed</div></div>
+</div>
+
+<!-- SKILLS MAIN -->
+<div class="skills-main">
+  <!-- Sidebar -->
+  <div class="skills-sidebar reveal">
+    <span class="lbl">Categories</span>
+    <h2 class="skills-sidebar-title">My<br><span>stack</span></h2>
+    <p class="skills-sidebar-note">Click a category to jump, or scroll through the full breakdown.</p>
+    <div class="skills-sidebar-cats">
+      <div class="sidebar-cat active" onclick="jumpTo('data-eng')"><div class="sidebar-cat-dot"></div>Data Engineering</div>
+      <div class="sidebar-cat" onclick="jumpTo('python')"><div class="sidebar-cat-dot"></div>Python & Backend</div>
+      <div class="sidebar-cat" onclick="jumpTo('databases')"><div class="sidebar-cat-dot"></div>Databases</div>
+      <div class="sidebar-cat" onclick="jumpTo('cloud')"><div class="sidebar-cat-dot"></div>Cloud & DevOps</div>
+      <div class="sidebar-cat" onclick="jumpTo('orchestration')"><div class="sidebar-cat-dot"></div>Orchestration</div>
+      <div class="sidebar-cat" onclick="jumpTo('other')"><div class="sidebar-cat-dot"></div>Other Tools</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="skills-content">
+
+    <!-- 01 Data Engineering -->
+    <div class="skill-group-block reveal" id="data-eng">
+      <div class="sgb-header">
+        <div><span class="lbl">01</span><h3 class="sgb-title">Data <span>Engineering</span></h3></div>
+        <p class="sgb-desc">Building reliable pipelines that move and transform data at scale — from raw sources to clean, queryable tables.</p>
+      </div>
+      <div class="skill-cards">
+        <div class="skill-card"><div class="skill-card-name">Apache Spark</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:90%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Apache Kafka</div><div class="skill-card-level">Intermediate</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:75%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">dbt</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:88%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">ETL / ELT Design</div><div class="skill-card-level">Expert</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:92%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Great Expectations</div><div class="skill-card-level">Intermediate</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:72%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Pandas / PySpark</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:90%"></div></div></div>
+      </div>
+      <div class="tools-row">
+        <span class="tool-tag">Batch Processing</span><span class="tool-tag">Stream Processing</span>
+        <span class="tool-tag">Data Contracts</span><span class="tool-tag">Data Quality</span>
+        <span class="tool-tag">Schema Design</span><span class="tool-tag">Idempotent Pipelines</span>
+      </div>
+    </div>
+
+    <!-- 02 Python & Backend -->
+    <div class="skill-group-block reveal" id="python">
+      <div class="sgb-header">
+        <div><span class="lbl">02</span><h3 class="sgb-title">Python <span>& Backend</span></h3></div>
+        <p class="sgb-desc">Writing clean, tested, production-grade Python. REST APIs, async services, and distributed task queues.</p>
+      </div>
+      <div class="prof-bars">
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Python</span><span class="sbar-pct">95%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:95%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">FastAPI</span><span class="sbar-pct">90%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:90%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Django & DRF</span><span class="sbar-pct">88%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:88%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Celery</span><span class="sbar-pct">85%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:85%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">SQLAlchemy / Pydantic</span><span class="sbar-pct">86%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:86%"></div></div></div>
+      </div>
+      <div class="tools-row" style="margin-top:24px;">
+        <span class="tool-tag">pytest</span><span class="tool-tag">asyncio</span><span class="tool-tag">type hints</span>
+        <span class="tool-tag">REST APIs</span><span class="tool-tag">OpenAPI</span><span class="tool-tag">Alembic</span>
+      </div>
+    </div>
+
+    <!-- 03 Databases -->
+    <div class="skill-group-block reveal" id="databases">
+      <div class="sgb-header">
+        <div><span class="lbl">03</span><h3 class="sgb-title">Databases <span>& Storage</span></h3></div>
+        <p class="sgb-desc">Schema design, query optimisation, and choosing the right storage engine for each workload.</p>
+      </div>
+      <div class="skill-cards">
+        <div class="skill-card"><div class="skill-card-name">PostgreSQL</div><div class="skill-card-level">Expert</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:92%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Redis</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:84%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">MongoDB</div><div class="skill-card-level">Intermediate</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:72%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Amazon Redshift</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:80%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">BigQuery</div><div class="skill-card-level">Intermediate</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:70%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">SQLite</div><div class="skill-card-level">Expert</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:95%"></div></div></div>
+      </div>
+      <div class="tools-row">
+        <span class="tool-tag">Query Optimisation</span><span class="tool-tag">Indexing</span>
+        <span class="tool-tag">Partitioning</span><span class="tool-tag">Migrations</span><span class="tool-tag">ACID</span>
+      </div>
+    </div>
+
+    <!-- 04 Cloud & DevOps -->
+    <div class="skill-group-block reveal" id="cloud">
+      <div class="sgb-header">
+        <div><span class="lbl">04</span><h3 class="sgb-title">Cloud <span>& DevOps</span></h3></div>
+        <p class="sgb-desc">Infrastructure that's repeatable, version-controlled, and doesn't require SSH-ing into prod at midnight.</p>
+      </div>
+      <div class="prof-bars">
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Docker</span><span class="sbar-pct">88%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:88%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">AWS (S3, Lambda, RDS, Glue)</span><span class="sbar-pct">80%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:80%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">GitHub Actions CI/CD</span><span class="sbar-pct">82%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:82%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Terraform</span><span class="sbar-pct">68%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:68%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Linux / Bash</span><span class="sbar-pct">85%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:85%"></div></div></div>
+      </div>
+      <div class="tools-row" style="margin-top:24px;">
+        <span class="tool-tag">Docker Compose</span><span class="tool-tag">AWS S3</span>
+        <span class="tool-tag">AWS Lambda</span><span class="tool-tag">AWS Glue</span>
+        <span class="tool-tag">Git</span><span class="tool-tag">CI/CD Pipelines</span>
+      </div>
+    </div>
+
+    <!-- 05 Orchestration -->
+    <div class="skill-group-block reveal" id="orchestration">
+      <div class="sgb-header">
+        <div><span class="lbl">05</span><h3 class="sgb-title">Task <span>Orchestration</span></h3></div>
+        <p class="sgb-desc">Scheduling, monitoring, and recovering distributed workflows reliably — no manual babysitting.</p>
+      </div>
+      <div class="skill-cards">
+        <div class="skill-card"><div class="skill-card-name">Apache Airflow</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:88%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Celery</div><div class="skill-card-level">Advanced</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:85%"></div></div></div>
+        <div class="skill-card"><div class="skill-card-name">Prefect</div><div class="skill-card-level">Intermediate</div><div class="skill-card-bar"><div class="skill-card-bar-fill" style="--w:65%"></div></div></div>
+      </div>
+      <div class="tools-row">
+        <span class="tool-tag">DAG Design</span><span class="tool-tag">Retry Logic</span>
+        <span class="tool-tag">SLA Monitoring</span><span class="tool-tag">Alerting</span><span class="tool-tag">Task Dependencies</span>
+      </div>
+    </div>
+
+    <!-- 06 Other -->
+    <div class="skill-group-block reveal" id="other">
+      <div class="sgb-header">
+        <div><span class="lbl">06</span><h3 class="sgb-title">Other <span>tools</span></h3></div>
+        <p class="sgb-desc">Supporting tools that keep work organised, reproducible, and collaborative.</p>
+      </div>
+      <div class="tools-row">
+        <span class="tool-tag">Git & GitHub</span><span class="tool-tag">VS Code</span>
+        <span class="tool-tag">Jupyter</span><span class="tool-tag">Postman</span>
+        <span class="tool-tag">Swagger / OpenAPI</span><span class="tool-tag">Makefile</span>
+        <span class="tool-tag">pre-commit</span><span class="tool-tag">black / ruff</span>
+        <span class="tool-tag">mypy</span><span class="tool-tag">Prometheus</span>
+        <span class="tool-tag">Grafana</span><span class="tool-tag">Sentry</span>
+        <span class="tool-tag">Notion</span><span class="tool-tag">Jira</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CURRENTLY LEARNING -->
+<section class="learning-section">
+  <span class="lbl reveal">Always growing</span>
+  <h2 class="s-h2 reveal" style="margin-top:16px;">Currently <span>learning</span></h2>
+  <div class="learning-grid">
+    <div class="learn-card reveal d1"><span class="learn-icon">⚡</span><div class="learn-name">Apache Flink</div><div class="learn-desc">Stateful stream processing for real-time analytics with exactly-once semantics.</div><span class="learn-badge">In progress</span></div>
+    <div class="learn-card reveal d2"><span class="learn-icon">🏗️</span><div class="learn-name">dbt Advanced</div><div class="learn-desc">Macros, packages, semantic layer, and dbt Cloud orchestration patterns.</div><span class="learn-badge">In progress</span></div>
+    <div class="learn-card reveal d3"><span class="learn-icon">🌩️</span><div class="learn-name">AWS Data Engineer</div><div class="learn-desc">Preparing for AWS Certified Data Engineer – Associate certification.</div><span class="learn-badge">Studying</span></div>
+    <div class="learn-card reveal d4"><span class="learn-icon">🔭</span><div class="learn-name">OpenTelemetry</div><div class="learn-desc">Distributed tracing and observability for data pipelines and microservices.</div><span class="learn-badge">Exploring</span></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band reveal">
+  <div>
+    <div class="cta-pre">Want to work together?</div>
+    <h2 class="cta-h2">Got a pipeline to <span>build?</span></h2>
+  </div>
+  <div class="cta-btns">
+    <a href="{% url 'contacts' %}" class="btn-cta-white">Get in Touch <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="{% url 'projects' %}" class="btn-cta-outline">View Projects</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="flogo"><span class="flogo-m">M</span><span class="flogo-d">d</span><div class="flogo-dot"></div></div>
+      <p class="ftag">Data Engineer & Python backend developer building reliable pipelines and scalable systems.</p>
+    </div>
+    <div class="fc"><span class="fc-t">Navigate</span><ul><li><a href="{% url 'home' %}">Home</a></li><li><a href="{% url 'about' %}">About</a></li><li><a href="{% url 'skills' %}">Skills</a></li><li><a href="{% url 'projects' %}">Projects</a></li><li><a href="{% url 'contacts' %}">Contact</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Expertise</span><ul><li><a href="#">ETL Pipelines</a></li><li><a href="#">Python Backend</a></li><li><a href="#">Data Warehousing</a></li><li><a href="#">Task Orchestration</a></li><li><a href="#">Cloud & DevOps</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Contact</span><ul><li><a href="mailto:manav@example.com">manav@example.com</a></li><li><a href="#">India · Remote</a></li><li><a href="#">LinkedIn ↗</a></li><li><a href="#">GitHub ↗</a></li><li><a href="#">Resume ↗</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <span class="fcopy">© 2026 <strong>Manav Dawawala</strong> · All rights reserved</span>
+    <div class="fsocs">
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.24 3h3.28l-7.17 8.2L22.73 21H16.3l-5.17-6.76L5.02 21H1.72l7.67-8.77L1.26 3h6.59l4.68 6.19L18.24 3z"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.skill-card,.learn-card,.ss-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>40));
+
+/* Reveal */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');obs.unobserve(x.target);}});},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* Animate bars when section visible */
+const barObs=new IntersectionObserver(e=>{
+  e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.skill-card-bar-fill,.sbar-fill').forEach(f=>f.classList.add('go'));barObs.unobserve(x.target);}});
+},{threshold:.15});
+document.querySelectorAll('.skill-group-block').forEach(el=>barObs.observe(el));
+
+/* Sidebar active on scroll */
+const sections=['data-eng','python','databases','cloud','orchestration','other'];
+const scObs=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const id=entry.target.id;
+      document.querySelectorAll('.sidebar-cat').forEach((cat,i)=>{
+        const active=sections[i]===id;
+        cat.classList.toggle('active',active);
+        cat.querySelector('.sidebar-cat-dot').style.background=active?'var(--blue)':'var(--border)';
+      });
+    }
+  });
+},{threshold:.4});
+sections.forEach(id=>{const el=document.getElementById(id);if(el)scObs.observe(el);});
+
+function jumpTo(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>

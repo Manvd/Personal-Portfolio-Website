@@ -1,0 +1,474 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — Manav Dawawala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+/* ── Contact page only ── */
+.ph{min-height:44vh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 64px 64px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.ph-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(12,1fr);pointer-events:none;}
+.ph-gc{border-right:1px solid var(--border);opacity:.4;}.ph-gc:first-child{border-left:1px solid var(--border);}
+.ph-wm{position:absolute;bottom:-10px;right:40px;font-family:var(--fh);font-size:clamp(80px,12vw,160px);font-weight:800;letter-spacing:-.06em;color:var(--off);line-height:1;user-select:none;pointer-events:none;}
+.ph-content{position:relative;z-index:2;}
+.ph-crumb{font-family:var(--fm);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:10px;margin-bottom:24px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
+.ph-crumb a:hover{color:var(--blue);}
+.ph-title{font-family:var(--fh);font-size:var(--fs-display);font-weight:800;letter-spacing:-.04em;line-height:.95;opacity:0;animation:fadeUp .7s ease .2s forwards;}
+.ph-title .line{display:block;}.ph-title .outline{-webkit-text-stroke:2px var(--black);color:transparent;}.ph-title .blue{color:var(--blue);}
+.ph-sub{font-size:.95rem;color:var(--mid);max-width:480px;line-height:1.75;margin-top:28px;opacity:0;animation:fadeUp .7s ease .35s forwards;}
+
+/* Response strip */
+.response-strip{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border);background:var(--off);}
+.rs-item{padding:44px 52px;border-right:1px solid var(--border);text-align:center;}
+.rs-item:last-child{border-right:none;}
+.rs-n{font-family:var(--fh);font-size:clamp(28px,4vw,52px);font-weight:800;letter-spacing:-.04em;color:var(--black);line-height:1;margin-bottom:8px;}
+.rs-n span{color:var(--blue);}
+.rs-label{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+.rs-desc{font-size:.8rem;color:var(--mid);margin-top:6px;line-height:1.6;}
+
+/* Main layout */
+.contact-main{display:grid;grid-template-columns:1fr 1.2fr;border-bottom:1px solid var(--border);}
+.contact-l{padding:80px 64px;border-right:1px solid var(--border);}
+.contact-r{padding:80px 64px;}
+
+/* Availability badge */
+.avail-badge{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid var(--border);background:var(--off);margin-bottom:36px;}
+.avail-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;animation:blink 2.5s ease-in-out infinite;flex-shrink:0;}
+.avail-text{font-family:var(--fm);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dark);}
+.avail-text span{color:var(--blue);}
+
+/* Contact cards */
+.contact-cards{display:flex;flex-direction:column;gap:2px;margin-top:36px;margin-bottom:44px;}
+.contact-card{display:flex;align-items:center;gap:20px;padding:20px 22px;border:1px solid var(--border);transition:border-color .25s,background .25s,transform .25s;position:relative;overflow:hidden;}
+.contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--blue);transition:width .25s;}
+.contact-card:hover{border-color:var(--blue);background:var(--off);transform:translateX(4px);}
+.contact-card:hover::before{width:3px;}
+.cc-icon{width:42px;height:42px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:border-color .25s,background .25s;}
+.contact-card:hover .cc-icon{border-color:var(--blue);background:var(--blue-lt);}
+.cc-label{font-family:var(--fm);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:2px;}
+.cc-val{font-size:.86rem;font-weight:500;color:var(--black);}
+.cc-note{font-size:.74rem;color:var(--mid);margin-top:1px;}
+
+/* Social */
+.social-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.soc-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1px solid var(--border);font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);transition:all .2s;}
+.soc-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt);}
+
+/* Form */
+.form-title{font-family:var(--fh);font-size:clamp(22px,2.5vw,32px);font-weight:800;letter-spacing:-.03em;margin:0 0 8px;}
+.form-title span{color:var(--blue);}
+.form-subtitle{font-size:.86rem;color:var(--mid);line-height:1.7;margin-bottom:32px;}
+.cform{display:flex;flex-direction:column;gap:16px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fgroup{display:flex;flex-direction:column;gap:6px;}
+.flabel{font-family:var(--fm);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+.finput,.ftextarea{width:100%;padding:12px 15px;background:var(--off);border:1.5px solid var(--border);font-family:var(--fb);font-size:.9rem;color:var(--black);outline:none;resize:none;transition:border-color .25s,background .25s;}
+.finput::placeholder,.ftextarea::placeholder{color:var(--mid);}
+.finput:focus,.ftextarea:focus{border-color:var(--blue);background:var(--white);}
+.finput.err,.ftextarea.err{border-color:#EF4444;background:#FFF5F5;}
+.ftextarea{min-height:130px;}
+
+/* Option selects */
+.fselect-label{font-family:var(--fm);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.fselect-opts{display:flex;flex-wrap:wrap;gap:7px;}
+.fopt{padding:7px 14px;border:1.5px solid var(--border);font-family:var(--fm);font-size:.6rem;letter-spacing:.09em;color:var(--mid);cursor:none;transition:all .2s;}
+.fopt:hover{border-color:var(--blue);color:var(--blue);}
+.fopt.sel{background:var(--blue);border-color:var(--blue);color:var(--white);}
+
+.fsubmit{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:var(--blue);color:var(--white);font-family:var(--fm);font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;border:none;cursor:none;align-self:flex-start;transition:background .25s,transform .2s;}
+.fsubmit:hover{background:var(--blue-dk);transform:translateY(-2px);}
+.fsubmit svg{transition:transform .2s;}
+.fsubmit:hover svg{transform:translateX(4px);}
+
+/* Success */
+.form-success{display:none;flex-direction:column;align-items:flex-start;gap:14px;padding:40px;background:var(--off);border:1px solid var(--border);}
+.form-success.show{display:flex;}
+.fs-icon{font-size:2rem;}
+.fs-title{font-family:var(--fh);font-size:clamp(20px,2.5vw,28px);font-weight:800;letter-spacing:-.03em;}
+.fs-title span{color:var(--blue);}
+.fs-sub{font-size:.86rem;color:var(--mid);line-height:1.75;}
+.fs-back{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--blue);padding-bottom:2px;margin-top:6px;cursor:none;background:none;border-left:none;border-right:none;border-top:none;transition:gap .2s;}
+.fs-back:hover{gap:14px;}
+
+/* FAQ */
+.faq-section{border-bottom:1px solid var(--border);}
+.faq-head{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.faq-hl{padding:72px 64px;border-right:1px solid var(--border);}
+.faq-hr{padding:72px 64px;display:flex;flex-direction:column;justify-content:flex-end;}
+.faq-h2{font-family:var(--fh);font-size:var(--fs-h2);font-weight:800;letter-spacing:-.03em;margin-top:16px;}
+.faq-h2 span{color:var(--blue);}
+.faq-note{font-size:.92rem;color:var(--mid);line-height:1.8;max-width:340px;}
+.faq-item{border-top:1px solid var(--border);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:26px 64px;cursor:none;transition:background .2s;}
+.faq-q:hover{background:var(--off);}
+.faq-q-text{font-family:var(--fh);font-size:1rem;font-weight:700;letter-spacing:-.01em;}
+.faq-toggle{width:30px;height:30px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:300;color:var(--mid);flex-shrink:0;transition:all .2s;}
+.faq-item.open .faq-toggle{background:var(--blue);border-color:var(--blue);color:var(--white);}
+.faq-a{display:none;padding:0 64px 26px;font-size:.88rem;color:var(--mid);line-height:1.8;max-width:680px;}
+.faq-item.open .faq-a{display:block;}
+
+@media(max-width:1100px){
+  .contact-main{grid-template-columns:1fr;}.contact-l{border-right:none;border-bottom:1px solid var(--border);}
+  .faq-head{grid-template-columns:1fr;}.faq-hl{border-right:none;border-bottom:1px solid var(--border);}
+  .response-strip{grid-template-columns:1fr 1fr;}.rs-item:nth-child(2){border-right:none;}
+}
+@media(max-width:768px){
+  .ph,.contact-l,.contact-r,.faq-hl,.faq-hr{padding-left:24px;padding-right:24px;}
+  .ph-wm{display:none;}
+  .faq-q,.faq-a{padding-left:24px;padding-right:24px;}
+  .form-row-2{grid-template-columns:1fr;}
+  .response-strip{grid-template-columns:1fr;}.rs-item{border-right:none;}
+  .fsubmit{align-self:stretch;justify-content:center;}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <span class="nav-logo-m">M</span><span class="nav-logo-d">d</span>
+    <div class="nav-logo-dot"></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'skills' %}">Skills</a></li>
+    <li><a href="{% url 'projects' %}">Projects</a></li>
+    <li><a href="{% url 'contacts' %}" class="active">Contact</a></li>
+  </ul>
+  <a href="{% url 'contacts' %}" class="nav-cta">Hire me <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="ph">
+  <div class="ph-grid">
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+    <div class="ph-gc"></div><div class="ph-gc"></div><div class="ph-gc"></div>
+  </div>
+  <div class="ph-wm">Contact</div>
+  <div class="ph-content">
+    <div class="ph-crumb">
+      <a href="{% url 'home' %}">Home</a>
+      <span style="color:var(--border)">/</span>
+      <span style="color:var(--black)">Contact</span>
+    </div>
+    <h1 class="ph-title">
+      <span class="line">Let's work</span>
+      <span class="line outline">together</span>
+      <span class="line blue">on something.</span>
+    </h1>
+    <p class="ph-sub">Have a data pipeline to build, a backend to scale, or just want to talk engineering? Send a message — I reply within 24 hours.</p>
+  </div>
+</div>
+
+<!-- RESPONSE STRIP -->
+<div class="response-strip">
+  <div class="rs-item reveal">
+    <div class="rs-n">&lt;24<span>h</span></div>
+    <div class="rs-label">Response time</div>
+    <div class="rs-desc">I reply to every message, usually within a few hours.</div>
+  </div>
+  <div class="rs-item reveal d1">
+    <div class="rs-n">100<span>%</span></div>
+    <div class="rs-label">Reply rate</div>
+    <div class="rs-desc">No message goes unanswered — ever.</div>
+  </div>
+  <div class="rs-item reveal d2">
+    <div class="rs-n">Free</div>
+    <div class="rs-label">Initial call</div>
+    <div class="rs-desc">30-min discovery call to understand your project, no strings attached.</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="contact-main">
+
+  <!-- Left -->
+  <div class="contact-l reveal">
+    <span class="lbl">Get in touch</span>
+    <h2 style="font-family:var(--fh);font-size:clamp(28px,3vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin:18px 0 24px;">
+      Let's talk <span style="color:var(--blue)">data.</span>
+    </h2>
+    <div class="avail-badge">
+      <div class="avail-dot"></div>
+      <div class="avail-text">Currently <span>open</span> for freelance & full-time</div>
+    </div>
+    <div class="contact-cards">
+      <div class="contact-card">
+        <div class="cc-icon">✉️</div>
+        <div><div class="cc-label">Email</div><div class="cc-val">manav@example.com</div><div class="cc-note">Best way to reach me</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon">📍</div>
+        <div><div class="cc-label">Location</div><div class="cc-val">India · Remote friendly</div><div class="cc-note">UTC+5:30 · Available for global projects</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon">🕐</div>
+        <div><div class="cc-label">Working hours</div><div class="cc-val">Mon – Fri · 9am – 7pm IST</div><div class="cc-note">Flexible for different time zones</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon">💼</div>
+        <div><div class="cc-label">Availability</div><div class="cc-val">Freelance & Full-time</div><div class="cc-note">Open to contract, part-time, and full-time</div></div>
+      </div>
+    </div>
+    <span class="lbl" style="margin-bottom:14px;display:inline-flex;">Find me online</span>
+    <div class="social-row">
+      <a href="#" class="soc-btn"><svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>GitHub</a>
+      <a href="#" class="soc-btn"><svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/></svg>LinkedIn</a>
+      <a href="#" class="soc-btn"><svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M18.24 3h3.28l-7.17 8.2L22.73 21H16.3l-5.17-6.76L5.02 21H1.72l7.67-8.77L1.26 3h6.59l4.68 6.19L18.24 3z"/></svg>Twitter</a>
+      <a href="#" class="soc-btn">📄 Resume</a>
+    </div>
+  </div>
+
+  <!-- Right — Form -->
+  <div class="contact-r reveal d2">
+    <h3 class="form-title">Send a <span>message</span></h3>
+    <p class="form-subtitle">Fill in the details and I'll get back to you within 24 hours.</p>
+
+    <form class="cform" id="contactForm" onsubmit="return handleSubmit(event)">
+      {% csrf_token %}
+      <input type="hidden" id="h-proj-type" name="Project_type"/>
+      <input type="hidden" id="h-budget" name="budget"/>
+      <div class="form-row-2">
+        <div class="fgroup">
+          <label class="flabel">First name *</label>
+          <input type="text" class="finput" id="f-first" name="first_name" placeholder="Rahul" required/>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Last name</label>
+          <input type="text" class="finput" id="f-last" name="last_name" placeholder="Kapoor"/>
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Email address *</label>
+        <input type="email" class="finput" id="f-email" name="email" placeholder="rahul@company.com" required/>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Company / Organisation</label>
+        <input type="text" class="finput" id="f-company" name="company" placeholder="DataCo Inc."/>
+      </div>
+
+      <div class="fgroup">
+        <div class="fselect-label">Project type</div>
+        <div class="fselect-opts" id="proj-type">
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">ETL Pipeline</span>
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">Python Backend</span>
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">Data Warehouse</span>
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">API Development</span>
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">Cloud & DevOps</span>
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">Full-time role</span>
+          <span class="fopt" onclick="selOpt(this,'proj-type','h-proj-type')">Other</span>
+        </div>
+      </div>
+
+      <div class="fgroup">
+        <div class="fselect-label">Budget range</div>
+        <div class="fselect-opts" id="budget">
+          <span class="fopt" onclick="selOpt(this,'budget','h-budget')">&lt; ₹50k</span>
+          <span class="fopt" onclick="selOpt(this,'budget','h-budget')">₹50k – ₹1L</span>
+          <span class="fopt" onclick="selOpt(this,'budget','h-budget')">₹1L – ₹3L</span>
+          <span class="fopt" onclick="selOpt(this,'budget','h-budget')">₹3L+</span>
+          <span class="fopt" onclick="selOpt(this,'budget','h-budget')">Full-time role</span>
+        </div>
+      </div>
+
+      <div class="fgroup">
+        <label class="flabel">Message *</label>
+        <textarea class="ftextarea" id="f-msg" name="message" placeholder="Tell me about your project — data sources, expected volumes, tech constraints, and timeline..." required></textarea>
+      </div>
+
+      <button type="submit" class="fsubmit" id="submitBtn">
+        Send Message
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <div id="formError" style="display:none;margin-top:12px;padding:12px 16px;background:#FEF2F2;border:1px solid #FCA5A5;font-family:var(--fm);font-size:.7rem;letter-spacing:.06em;color:#DC2626;"></div>
+    </form>
+
+    <!-- Success -->
+    <div class="form-success" id="formSuccess">
+      <div class="fs-icon">✅</div>
+      <div class="fs-title">Message <span>received!</span></div>
+      <div class="fs-sub">Thanks for reaching out. I'll review your message and get back within 24 hours. Looking forward to hearing about your project.</div>
+      <button class="fs-back" onclick="resetForm()">Send another message <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-head">
+    <div class="faq-hl reveal">
+      <span class="lbl">Common questions</span>
+      <h2 class="faq-h2">Before you <span>reach out</span></h2>
+    </div>
+    <div class="faq-hr reveal d2">
+      <p class="faq-note">Quick answers to the questions I get most often. Still have something else? Just send a message above.</p>
+    </div>
+  </div>
+  <div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">What types of projects do you take on?</div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-a">I specialise in data engineering and Python backend work — ETL/ELT pipelines, data warehouses, REST APIs, distributed task systems, and cloud infrastructure. I take on projects end-to-end or as a specialist in a specific layer.</div>
+    </div>
+    <div class="faq-item reveal d1">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">What is your typical engagement model?</div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-a">I work on fixed-scope projects (defined deliverables, fixed price) and ongoing retainer contracts (hourly or monthly). For larger projects I prefer starting with a paid discovery sprint to define scope, architecture, and data contracts before committing to a full estimate.</div>
+    </div>
+    <div class="faq-item reveal d2">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">How long does a typical project take?</div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-a">A focused API or pipeline can be done in 2–4 weeks. A full data warehouse with orchestration and quality monitoring typically takes 6–12 weeks. I share a realistic timeline after the discovery phase — I don't overpromise.</div>
+    </div>
+    <div class="faq-item reveal d3">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">Are you open to full-time opportunities?</div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-a">Yes — I'm open to full-time remote roles as a Data Engineer or Python Backend Developer. I'm looking for teams that care about engineering quality, have interesting data problems, and value clear communication.</div>
+    </div>
+    <div class="faq-item reveal d4">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">Do you work with international clients?</div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-a">Absolutely. I've worked with clients across India, Europe, and North America. I'm comfortable with async communication, overlap hours, and tools like Slack, Notion, Linear, and Jira. Time zones are rarely a blocker if communication is clear.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="flogo"><span class="flogo-m">M</span><span class="flogo-d">d</span><div class="flogo-dot"></div></div>
+      <p class="ftag">Data Engineer & Python backend developer building reliable pipelines and scalable systems.</p>
+    </div>
+    <div class="fc"><span class="fc-t">Navigate</span><ul><li><a href="{% url 'home' %}">Home</a></li><li><a href="{% url 'about' %}">About</a></li><li><a href="{% url 'skills' %}">Skills</a></li><li><a href="{% url 'projects' %}">Projects</a></li><li><a href="{% url 'contacts' %}">Contact</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Expertise</span><ul><li><a href="#">ETL Pipelines</a></li><li><a href="#">Python Backend</a></li><li><a href="#">Data Warehousing</a></li><li><a href="#">Task Orchestration</a></li><li><a href="#">Cloud & DevOps</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Contact</span><ul><li><a href="mailto:manav@example.com">manav@example.com</a></li><li><a href="#">India · Remote</a></li><li><a href="#">LinkedIn ↗</a></li><li><a href="#">GitHub ↗</a></li><li><a href="#">Resume ↗</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <span class="fcopy">© 2026 <strong>Manav Dawawala</strong> · All rights reserved</span>
+    <div class="fsocs">
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.24 3h3.28l-7.17 8.2L22.73 21H16.3l-5.17-6.76L5.02 21H1.72l7.67-8.77L1.26 3h6.59l4.68 6.19L18.24 3z"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.contact-card,.faq-q,.fopt,.rs-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>40));
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');obs.unobserve(x.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* Option select — also updates hidden input */
+function selOpt(el, groupId, hiddenId){
+  document.querySelectorAll('#'+groupId+' .fopt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  if(hiddenId) document.getElementById(hiddenId).value = el.textContent.trim();
+}
+
+/* FAQ */
+function toggleFaq(qEl){
+  const item=qEl.parentElement;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>{i.classList.remove('open');i.querySelector('.faq-toggle').textContent='+';});
+  if(!isOpen){item.classList.add('open');qEl.querySelector('.faq-toggle').textContent='−';}
+}
+
+/* Form submit — POSTs to Django via fetch */
+function handleSubmit(e){
+  e.preventDefault();
+
+  // Validate required fields
+  let valid = true;
+  ['f-first','f-email','f-msg'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.classList.remove('err');
+    if(!el.value.trim()){ el.classList.add('err'); valid = false; }
+  });
+  if(!valid) return false;
+
+  // Show loading state
+  const btn = document.getElementById('submitBtn');
+  const errDiv = document.getElementById('formError');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  errDiv.style.display = 'none';
+
+  // Collect form data
+  const form = document.getElementById('contactForm');
+  const data = new FormData(form);
+
+  // POST to Django
+  fetch("{% url 'contacts' %}", {
+    method: 'POST',
+    headers: { 'X-CSRFToken': data.get('csrfmiddlewaretoken') },
+    body: data,
+  })
+  .then(res => res.json())
+  .then(json => {
+    if(json.success){
+      form.style.display = 'none';
+      document.getElementById('formSuccess').classList.add('show');
+    } else {
+      errDiv.textContent = json.error || 'Something went wrong. Please try again.';
+      errDiv.style.display = 'block';
+      btn.textContent = 'Send Message';
+      btn.disabled = false;
+    }
+  })
+  .catch(()=>{
+    errDiv.textContent = 'Network error. Please check your connection and try again.';
+    errDiv.style.display = 'block';
+    btn.innerHTML = 'Send Message <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    btn.disabled = false;
+  });
+
+  return false;
+}
+
+function resetForm(){
+  const form = document.getElementById('contactForm');
+  form.reset();
+  form.style.display = 'flex';
+  document.getElementById('formSuccess').classList.remove('show');
+  document.getElementById('formError').style.display = 'none';
+  document.querySelectorAll('.fopt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.finput,.ftextarea').forEach(el=>el.classList.remove('err'));
+  document.getElementById('h-proj-type').value = '';
+  document.getElementById('h-budget').value = '';
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = 'Send Message <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

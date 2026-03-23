@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manav Dawawala — Data Engineer & Python Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+/* ── Hero (home page only) ── */
+.hero {
+  min-height: 100vh;
+  padding: 68px 64px 0;   /* top = nav height */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle dot grid — stays strictly behind content */
+.hero-dotgrid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 36px 36px;
+  opacity: .5;
+  /* fade out at edges so it doesn't look clipped */
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black 0%, transparent 100%);
+}
+
+/* MD watermark — bottom-right, low opacity, behind everything */
+.hero-wm {
+  position: absolute;
+  bottom: 0; right: 0;
+  font-family: var(--fh);
+  font-size: clamp(80px, 14vw, 180px);
+  font-weight: 800;
+  letter-spacing: -.06em;
+  color: var(--off);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;            /* behind all content */
+  animation: fadeIn 1s ease .8s both;
+}
+
+/* Main content area — takes up remaining space */
+.hero-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 40px;
+  max-width: 700px;       /* cap width so title doesn't overflow */
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp .6s ease .1s forwards;
+}
+.hero-status {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--fm); font-size: .62rem;
+  letter-spacing: .13em; text-transform: uppercase; color: var(--mid);
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #22C55E;
+  flex-shrink: 0;
+  animation: blink 2.5s ease-in-out infinite;
+}
+.hero-sep { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
+
+.hero-title {
+  font-family: var(--fh);
+  font-size: clamp(36px, 5.5vw, 80px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -.04em;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp .7s ease .2s forwards;
+}
+.hero-title .line    { display: block; }
+.hero-title .outline { -webkit-text-stroke: 2px var(--black); color: transparent; }
+.hero-title .blue    { color: var(--blue); }
+
+/* Code snippet */
+.hero-code {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  background: var(--off);
+  font-family: var(--fm);
+  font-size: .68rem;
+  color: var(--mid);
+  width: fit-content;
+  max-width: 100%;
+  opacity: 0;
+  animation: fadeUp .7s ease .32s forwards;
+}
+.hero-code .kw  { color: var(--blue); }
+.hero-code .str { color: var(--black); font-weight: 500; }
+.hero-code .sep { color: var(--border); }
+
+/* Horizontal rule before bottom row */
+.hero-rule {
+  height: 1px;
+  background: var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+/* Bottom row: desc | CTA | stats */
+.hero-bottom {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 32px;
+  padding: 36px 0 48px;
+  opacity: 0;
+  animation: fadeUp .7s ease .44s forwards;
+}
+.hero-desc {
+  font-size: .9rem;
+  color: var(--mid);
+  line-height: 1.8;
+}
+.hero-cta-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-stats {
+  display: flex;
+  gap: 28px;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.hero-stat { text-align: right; }
+.hero-stat-n {
+  font-family: var(--fh);
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: 1;
+  color: var(--black);
+}
+.hero-stat-n span { color: var(--blue); }
+.hero-stat-l {
+  font-family: var(--fm);
+  font-size: .54rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-top: 3px;
+}
+
+/* Mobile */
+@media (max-width: 1024px) {
+  .hero-main { max-width: 100%; }
+}
+@media (max-width: 768px) {
+  .hero { padding: 68px 24px 0; }
+  .hero-title { font-size: clamp(32px, 8vw, 52px); }
+  .hero-bottom {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 28px 0 36px;
+  }
+  .hero-stats { justify-content: flex-start; gap: 20px; }
+  .hero-wm    { display: none; }
+  .hero-code  { font-size: .6rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <span class="nav-logo-m">M</span><span class="nav-logo-d">d</span>
+    <div class="nav-logo-dot"></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}" class="active">Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'skills' %}">Skills</a></li>
+    <li><a href="{% url 'projects' %}">Projects</a></li>
+    <li><a href="{% url 'contacts' %}">Contact</a></li>
+  </ul>
+  <a href="{% url 'contacts' %}" class="nav-cta">
+    Hire me
+    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-dotgrid"></div>
+  <div class="hero-wm">MD</div>
+
+  <div class="hero-main">
+    <div class="hero-eyebrow">
+      <div class="hero-status">
+        <div class="status-dot"></div>
+        Open to opportunities
+      </div>
+      <div class="hero-sep"></div>
+      <span class="lbl" style="font-size:.6rem;">India · Remote</span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="line">Data</span>
+      <span class="line outline">Engineer</span>
+      <span class="line blue">& Python Dev.</span>
+    </h1>
+
+    <div class="hero-code">
+      <span class="kw">pipeline</span>
+      <span class="sep">|</span>
+      <span class="str">extract</span>
+      <span class="sep">→</span>
+      <span class="str">transform</span>
+      <span class="sep">→</span>
+      <span class="str">load</span>
+      <span class="sep">|</span>
+      <span class="kw">scale</span>
+    </div>
+  </div>
+
+  <div class="hero-rule"></div>
+
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      I build robust data pipelines, scalable backend systems, and turn raw data into reliable infrastructure that teams depend on.
+    </p>
+    <div class="hero-cta-group">
+      <a href="{% url 'projects' %}" class="btn-fill">
+        View Projects
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="{% url 'contacts' %}" class="btn-ghost">Contact</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-n">10<span>+</span></div>
+        <div class="hero-stat-l">Projects</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">3<span>+</span></div>
+        <div class="hero-stat-l">Years Exp</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">TB<span>s</span></div>
+        <div class="hero-stat-l">Data Processed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>Python</span><span class="ta">·</span>
+    <span>Apache Spark</span><span class="ta">·</span>
+    <span>Airflow</span><span class="ta">·</span>
+    <span>PostgreSQL</span><span class="ta">·</span>
+    <span>dbt</span><span class="ta">·</span>
+    <span>Kafka</span><span class="ta">·</span>
+    <span>FastAPI</span><span class="ta">·</span>
+    <span>Docker</span><span class="ta">·</span>
+    <span>AWS</span><span class="ta">·</span>
+    <span>Redis</span><span class="ta">·</span>
+    <span>ETL Pipelines</span><span class="ta">·</span>
+    <span>Celery</span><span class="ta">·</span>
+    <span>Python</span><span class="ta">·</span>
+    <span>Apache Spark</span><span class="ta">·</span>
+    <span>Airflow</span><span class="ta">·</span>
+    <span>PostgreSQL</span><span class="ta">·</span>
+    <span>dbt</span><span class="ta">·</span>
+    <span>Kafka</span><span class="ta">·</span>
+    <span>FastAPI</span><span class="ta">·</span>
+    <span>Docker</span><span class="ta">·</span>
+    <span>AWS</span><span class="ta">·</span>
+    <span>Redis</span><span class="ta">·</span>
+    <span>ETL Pipelines</span><span class="ta">·</span>
+    <span>Celery</span><span class="ta">·</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-l reveal">
+    <span class="lbl">About me</span>
+    <h2 class="about-name">Manav<br><span>Dawawala</span></h2>
+    <p class="about-bio">I'm a <strong>Data Engineer and Python backend developer</strong> who specialises in building pipelines that move, transform, and serve data reliably at scale.</p>
+    <p class="about-bio">I care about clean architecture, reproducible workflows, and systems that don't wake you up at 3am.</p>
+    <div class="about-chips">
+      <span class="pill">Open to work</span>
+      <span class="pill">Remote friendly</span>
+      <span class="pill">Backend & Data</span>
+      <span class="pill">Python · SQL</span>
+    </div>
+  </div>
+  <div class="about-r reveal d2">
+    <div class="fact-row"><span class="fact-label">Role</span><div class="fact-val">Data Engineer<small>Python Backend Developer</small></div></div>
+    <div class="fact-row"><span class="fact-label">Experience</span><div class="fact-val">3+ Years<small>Pipelines, APIs & Systems</small></div></div>
+    <div class="fact-row"><span class="fact-label">Stack</span><div class="fact-val">Python · SQL · Spark<small>Airflow · FastAPI · Docker</small></div></div>
+    <div class="fact-row"><span class="fact-label">Projects</span><div class="fact-val">ETL Pipeline<small>Scalable Task Manager & more</small></div></div>
+    <div class="fact-row"><span class="fact-label">Status</span><div class="fact-val blue">Available Now<small style="color:var(--mid)">Freelance & full-time</small></div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services">
+  <div class="svc-head">
+    <div class="svc-hl reveal"><span class="lbl">What I build</span><h2 class="s-h2">Services &<br><span>expertise</span></h2></div>
+    <div class="svc-hr reveal d2"><p class="svc-desc">From raw ingestion to clean, queryable data — I own the full data lifecycle and the backend systems that power it.</p></div>
+  </div>
+  <div class="svc-grid">
+    <div class="svc-item reveal d1"><span class="svc-idx">01 / 06</span><div class="svc-icon">🔁</div><div class="svc-title">ETL / ELT Pipelines</div><div class="svc-body">End-to-end data pipelines that extract, transform, and load reliably. Batch and streaming, idempotent and monitored.</div></div>
+    <div class="svc-item reveal d2"><span class="svc-idx">02 / 06</span><div class="svc-icon">⚡</div><div class="svc-title">Python Backend APIs</div><div class="svc-body">FastAPI and Django REST services. Clean architecture, async support, auth systems, and full OpenAPI documentation.</div></div>
+    <div class="svc-item reveal d3"><span class="svc-idx">03 / 06</span><div class="svc-icon">🗄️</div><div class="svc-title">Data Warehousing</div><div class="svc-body">Schema design, dbt transformations, and query optimisation for PostgreSQL, Redshift, and BigQuery.</div></div>
+    <div class="svc-item reveal d4"><span class="svc-idx">04 / 06</span><div class="svc-icon">📋</div><div class="svc-title">Task Orchestration</div><div class="svc-body">Airflow DAGs and Celery workers for distributed task management. Retry logic, alerting, and observability built-in.</div></div>
+    <div class="svc-item reveal d5"><span class="svc-idx">05 / 06</span><div class="svc-icon">☁️</div><div class="svc-title">Cloud & DevOps</div><div class="svc-body">AWS (S3, Lambda, RDS, Glue), Docker, and CI/CD. Infrastructure that's repeatable and version-controlled.</div></div>
+    <div class="svc-item reveal d6"><span class="svc-idx">06 / 06</span><div class="svc-icon">📊</div><div class="svc-title">Data Quality & Monitoring</div><div class="svc-body">Great Expectations, custom alerting, and data contracts. Catch issues before they hit production dashboards.</div></div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work">
+  <div class="work-head reveal">
+    <div><span class="lbl">Portfolio</span><h2 class="s-h2">Selected <span>projects</span></h2></div>
+    <a href="{% url 'projects' %}" class="work-all">All projects <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div>
+    <div class="work-item reveal"><div class="work-num">01</div><div class="work-name">ETL Pipeline Framework</div><div class="work-cat">Data Engineering · Python</div><div class="work-tags"><span class="pill">Python</span><span class="pill">Airflow</span><span class="pill">PostgreSQL</span><span class="pill">Docker</span></div><div class="work-arr">→</div></div>
+    <div class="work-item reveal d1"><div class="work-num">02</div><div class="work-name">Scalable Task Manager</div><div class="work-cat">Backend · Distributed Systems</div><div class="work-tags"><span class="pill">FastAPI</span><span class="pill">Celery</span><span class="pill">Redis</span><span class="pill">PostgreSQL</span></div><div class="work-arr">→</div></div>
+    <div class="work-item reveal d2"><div class="work-num">03</div><div class="work-name">Real-time Data Streaming</div><div class="work-cat">Streaming · Analytics</div><div class="work-tags"><span class="pill">Kafka</span><span class="pill">Spark</span><span class="pill">Python</span></div><div class="work-arr">→</div></div>
+    <div class="work-item reveal d3"><div class="work-num">04</div><div class="work-name">Analytics Data Warehouse</div><div class="work-cat">Data Warehouse · dbt</div><div class="work-tags"><span class="pill">dbt</span><span class="pill">Redshift</span><span class="pill">Python</span></div><div class="work-arr">→</div></div>
+    <div class="work-item reveal d4"><div class="work-num">05</div><div class="work-name">REST API Service</div><div class="work-cat">Backend · API Design</div><div class="work-tags"><span class="pill">Django</span><span class="pill">DRF</span><span class="pill">AWS</span></div><div class="work-arr">→</div></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills">
+  <div class="skills-inner">
+    <div class="skills-l reveal">
+      <span class="lbl">Stack</span>
+      <h2 class="skills-h2">Technical<br><span>skills</span></h2>
+      <p class="skills-note">Deliberate practice across the data and backend engineering stack — from ingestion to serving.</p>
+      <a href="{% url 'skills' %}" class="skills-lnk">Full skills page <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="skills-r reveal d2" id="skillBars">
+      <div class="sg"><div class="sg-title">Data Engineering</div><div class="sp"><span class="s-pill">Apache Spark</span><span class="s-pill">Airflow</span><span class="s-pill">Kafka</span><span class="s-pill">dbt</span><span class="s-pill">ETL / ELT</span><span class="s-pill">Great Expectations</span></div></div>
+      <div class="sg"><div class="sg-title">Python & Backend</div><div class="sp"><span class="s-pill">Python</span><span class="s-pill">FastAPI</span><span class="s-pill">Django</span><span class="s-pill">Celery</span><span class="s-pill">SQLAlchemy</span><span class="s-pill">Pydantic</span></div></div>
+      <div class="sg"><div class="sg-title">Databases & Cloud</div><div class="sp"><span class="s-pill">PostgreSQL</span><span class="s-pill">Redis</span><span class="s-pill">MongoDB</span><span class="s-pill">AWS</span><span class="s-pill">Docker</span><span class="s-pill">Terraform</span></div></div>
+      <div class="skill-bars">
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Python</span><span class="sbar-pct">95%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:95%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">ETL / Data Pipelines</span><span class="sbar-pct">92%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:92%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">SQL & Databases</span><span class="sbar-pct">90%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:90%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">FastAPI / Django</span><span class="sbar-pct">88%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:88%"></div></div></div>
+        <div class="sbar"><div class="sbar-h"><span class="sbar-name">Cloud & DevOps</span><span class="sbar-pct">80%</span></div><div class="sbar-track"><div class="sbar-fill" style="--w:80%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <div class="process-head reveal">
+    <span class="lbl">How I work</span>
+    <h2 class="s-h2">My <span>approach</span></h2>
+  </div>
+  <div class="process-steps">
+    <div class="ps reveal d1"><div class="ps-num">01</div><div class="ps-title">Understand</div><div class="ps-desc">Map data sources, volumes, and downstream consumers. Define SLAs, freshness requirements, and failure modes upfront.</div></div>
+    <div class="ps reveal d2"><div class="ps-num">02</div><div class="ps-title">Design</div><div class="ps-desc">Schema design, pipeline architecture, and technology choices. Document the data contract before writing a single line of code.</div></div>
+    <div class="ps reveal d3"><div class="ps-num">03</div><div class="ps-title">Build</div><div class="ps-desc">Modular, tested Python code. Idempotent pipelines with proper error handling, retries, and observability from day one.</div></div>
+    <div class="ps reveal d4"><div class="ps-num">04</div><div class="ps-title">Ship & Monitor</div><div class="ps-desc">CI/CD to production, data quality checks, alerting, and runbooks. Systems that self-report issues before users notice them.</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi">
+  <div class="testi-head reveal">
+    <span class="lbl">Kind words</span>
+    <h2 class="s-h2">What people <span>say</span></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="tc reveal d1"><div class="tc-stars">★★★★★</div><div class="tc-text">"Manav built an ETL pipeline that processes millions of rows daily without a single missed SLA in six months. The code is clean, well-documented, and a pleasure to maintain."</div><div class="tc-author"><div class="tc-av">RK</div><div><div class="tc-name">Rahul Kapoor</div><div class="tc-role">Data Lead · FinanceOps</div></div></div></div>
+    <div class="tc reveal d2"><div class="tc-stars">★★★★★</div><div class="tc-text">"The task manager Manav built handles 50k+ jobs per day. The architecture decisions were spot-on and the system has needed zero major rework since launch."</div><div class="tc-author"><div class="tc-av">PS</div><div><div class="tc-name">Priya Shah</div><div class="tc-role">CTO · Logistic Co.</div></div></div></div>
+    <div class="tc reveal d3"><div class="tc-stars">★★★★★</div><div class="tc-text">"Fast, reliable, and communicative. Manav understood our data requirements instantly and delivered a warehouse solution that cut query times by 80%."</div><div class="tc-author"><div class="tc-av">AM</div><div><div class="tc-name">Arjun Mehta</div><div class="tc-role">Analytics Manager · SaaS Co.</div></div></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band reveal">
+  <div>
+    <div class="cta-pre">Let's work together</div>
+    <h2 class="cta-h2">Got data to move?<br><span>Let's talk.</span></h2>
+  </div>
+  <div class="cta-btns">
+    <a href="{% url 'contacts' %}" class="btn-cta-white">Start a Project <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="{% url 'projects' %}" class="btn-cta-outline">View Work</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="flogo"><span class="flogo-m">M</span><span class="flogo-d">d</span><div class="flogo-dot"></div></div>
+      <p class="ftag">Data Engineer & Python backend developer building reliable pipelines and scalable systems.</p>
+    </div>
+    <div class="fc"><span class="fc-t">Navigate</span><ul><li><a href="{% url 'home' %}">Home</a></li><li><a href="{% url 'about' %}">About</a></li><li><a href="{% url 'skills' %}">Skills</a></li><li><a href="{% url 'projects' %}">Projects</a></li><li><a href="{% url 'contacts' %}">Contact</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Expertise</span><ul><li><a href="#">ETL Pipelines</a></li><li><a href="#">Python Backend</a></li><li><a href="#">Data Warehousing</a></li><li><a href="#">Task Orchestration</a></li><li><a href="#">Cloud & DevOps</a></li></ul></div>
+    <div class="fc"><span class="fc-t">Contact</span><ul><li><a href="mailto:manav@example.com">manav@example.com</a></li><li><a href="#">India · Remote</a></li><li><a href="#">LinkedIn ↗</a></li><li><a href="#">GitHub ↗</a></li><li><a href="#">Resume ↗</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <span class="fcopy">© 2026 <strong>Manav Dawawala</strong> · All rights reserved</span>
+    <div class="fsocs">
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.82 1.23 1.82 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.92 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/></svg></a>
+      <a href="#" class="fsoc"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.24 3h3.28l-7.17 8.2L22.73 21H16.3l-5.17-6.76L5.02 21H1.72l7.67-8.77L1.26 3h6.59l4.68 6.19L18.24 3z"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.svc-item,.work-item,.tc,.ps').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>40));
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');obs.unobserve(x.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const bObs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.sbar-fill').forEach(f=>f.classList.add('go'));bObs.unobserve(x.target);}});},{threshold:.25});
+const sb=document.getElementById('skillBars');if(sb)bObs.observe(sb);
+</script>
+</body>
+</html>
