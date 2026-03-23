@@ -181,7 +181,7 @@ django==5.2.12
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@your-username](https://github.com/your-username)
+- GitHub: [@your-username](https://github.com/Manvd)
 - LinkedIn: [your-linkedin](https://linkedin.com/in/your-linkedin)
 
 ---
