@@ -10,16 +10,16 @@ A personal portfolio website built with **Python Django** showcasing my skills, 
 ![Home Page](screenshots/home.png)
 
 ### 👤 About Page
-![About Page](screenshots/about.png)
+![About Page](Screenshots/about.png)
 
 ### 🛠️ Skills Page
-![Skills Page](screenshots/skills.png)
+![Skills Page](Screenshots/skills.png)
 
 ### 💼 Projects Page
-![Projects Page](screenshots/projects.png)
+![Projects Page](Screenshots/projects.png)
 
 ### 📬 Contact Page
-![Contact Page](screenshots/contact.png)
+![Contact Page](Screenshots/contact.png)
 
 ---
 
